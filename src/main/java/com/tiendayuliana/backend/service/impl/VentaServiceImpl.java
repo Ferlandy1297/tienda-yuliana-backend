@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tiendayuliana.backend.dto.venta.PagoCreateDTO;
 import com.tiendayuliana.backend.dto.venta.VentaCreateDTO;
 import com.tiendayuliana.backend.dto.venta.VentaDetalleCreateDTO;
-import com.tiendayuliana.backend.dto.venta.VentaListItemDTO;     // <-- ADAPTACIÓN (import)
+import com.tiendayuliana.backend.dto.venta.VentaListItemDTO;     
 import com.tiendayuliana.backend.dto.venta.VentaResponseDTO;
 import com.tiendayuliana.backend.exception.BadRequestException;
 import com.tiendayuliana.backend.exception.NotFoundException;
