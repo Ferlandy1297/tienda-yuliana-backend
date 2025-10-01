@@ -54,7 +54,7 @@ public class VentaServiceImpl implements VentaService {
     public VentaResponseDTO crear(VentaCreateDTO dto) {
 
         // Validar tipo
-        String tipo = dto.getTipo().toUpperCase().trim();
+        String tipo = dto.getTipo() == null ? "DETALLE" : dto.getTipo().toUpperCase().trim();
         if (!(tipo.equals("DETALLE") || tipo.equals("MAYOREO") || tipo.equals("FIADO"))) {
             throw new BadRequestException("Tipo de venta inválido");
         }
@@ -71,6 +71,14 @@ public class VentaServiceImpl implements VentaService {
         }
         if (tipo.equals("FIADO") && cliente == null) {
             throw new BadRequestException("Ventas FIADO requieren cliente");
+        }
+        if (tipo.equals("MAYOREO")) {
+            if (cliente == null) {
+                throw new BadRequestException("Las ventas al por mayor requieren un cliente registrado");
+            }
+            if (Boolean.FALSE.equals(cliente.getEsMayorista())) {
+                throw new BadRequestException("El cliente seleccionado no es mayorista");
+            }
         }
 
         // Crear venta
@@ -190,6 +198,9 @@ public class VentaServiceImpl implements VentaService {
         VentaResponseDTO.PagoOut pagoOut = null;
         if (dto.getPago() != null) {
             PagoCreateDTO p = dto.getPago();
+            if (p.getMetodo() != null && !"EFECTIVO".equalsIgnoreCase(p.getMetodo())) {
+                throw new BadRequestException("Solo se admiten pagos en efectivo");
+            }
             if (p.getMontoEntregado().compareTo(total) < 0) {
                 throw new BadRequestException("Monto entregado insuficiente");
             }
@@ -282,6 +293,12 @@ public class VentaServiceImpl implements VentaService {
 
     /** Consume stock por FIFO y devuelve los lotes y cantidades tomadas de cada uno. */
     private List<ConsumoFIFO> consumirFIFO(Integer idProducto, int cantidadSolicitada) {
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
+        if (producto.getStock() < cantidadSolicitada) {
+            throw new BadRequestException("Stock insuficiente del producto " + idProducto);
+        }
+
         List<Lote> lotes = loteRepository
                 .findByProducto_IdProductoOrderByFechaVencimientoAsc(idProducto);
 
@@ -303,10 +320,8 @@ public class VentaServiceImpl implements VentaService {
         }
 
         // Actualiza stock global del producto
-        Producto p = productoRepository.findById(idProducto)
-                .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
-        p.setStock(p.getStock() - cantidadSolicitada);
-        productoRepository.save(p);
+        producto.setStock(producto.getStock() - cantidadSolicitada);
+        productoRepository.save(producto);
 
         return consumos;
     }

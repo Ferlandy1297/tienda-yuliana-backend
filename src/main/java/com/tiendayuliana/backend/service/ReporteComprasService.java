@@ -19,10 +19,20 @@ public class ReporteComprasService {
 
     public List<ReporteComprasDTO> compras(LocalDate desde, LocalDate hasta, Integer proveedorId) {
         LocalDateTime ini = desde.atStartOfDay();
-        LocalDateTime fin = hasta.plusDays(1).atStartOfDay().minusSeconds(1);
+        LocalDateTime fin = hasta.plusDays(1).atStartOfDay().minusNanos(1);
         return compraRepository.comprasPorPeriodo(ini, fin, proveedorId)
-            .stream()
-            .map(r -> new ReporteComprasDTO((java.time.LocalDate) r[0], (BigDecimal) r[1]))
-            .toList();
+                .stream()
+                .map(r -> new ReporteComprasDTO(toLocalDate(r[0]), (BigDecimal) r[1]))
+                .toList();
+    }
+
+    private LocalDate toLocalDate(Object value) {
+        if (value instanceof LocalDate date) {
+            return date;
+        }
+        if (value instanceof java.sql.Date date) {
+            return date.toLocalDate();
+        }
+        throw new IllegalStateException("No se pudo convertir la fecha del reporte de compras");
     }
 }

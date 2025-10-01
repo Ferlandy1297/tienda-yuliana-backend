@@ -38,92 +38,94 @@ public class CompraServiceImpl implements CompraService {
     private final ProveedorRepository proveedorRepo;
     private final ProductoRepository productoRepo;
     private final LoteRepository loteRepo;
+    @Override
+    @Transactional
+    public Integer crearCompra(CompraCreateDTO dto) {
+        Proveedor prov = proveedorRepo.findById(dto.idProveedor())
+                .orElseThrow(() -> new NotFoundException("Proveedor no encontrado"));
 
-
-    
-@Override
-@Transactional
-public Integer crearCompra(CompraCreateDTO dto) {
-    Proveedor prov = proveedorRepo.findById(dto.idProveedor())
-        .orElseThrow(() -> new NotFoundException("Proveedor no encontrado"));
-
-    Compra compra = new Compra();
-    compra.setProveedor(prov);
-    compra.setFechaHora(LocalDateTime.now());
-    compra.setCondicion(dto.condicion() == null ? "CONTADO" : dto.condicion().toUpperCase());
-    compra.setEstado("ABIERTA");
-    compra.setObservacion(dto.observacion());
-    compra.setTotal(BigDecimal.ZERO);
-    compra = compraRepo.save(compra); // obtener idCompra antes de los detalles
-
-    BigDecimal total = BigDecimal.ZERO;
-
-    for (CompraItemDTO it : dto.items()) {
-        Producto prod = productoRepo.findById(it.idProducto())
-            .orElseThrow(() -> new NotFoundException("Producto no encontrado: " + it.idProducto()));
-
-        if (it.cantidad() <= 0) throw new BadRequestException("Cantidad inválida");
-        if (it.costoUnitario().compareTo(BigDecimal.ZERO) <= 0) throw new BadRequestException("Costo inválido");
-
-        // Crear lote
-        Lote lote = new Lote();
-        lote.setProducto(prod);
-        lote.setFechaVencimiento(it.fechaVencimiento());
-        lote.setCantidadDisponible(it.cantidad());
-        lote = loteRepo.save(lote);
-
-        // Actualizar stock del producto
-        prod.setStock(prod.getStock() + it.cantidad());
-        productoRepo.save(prod);
-
-        // Crear detalle (id compuesto completo)
-        CompraDetalleId detId = new CompraDetalleId(compra.getIdCompra(), prod.getIdProducto(), lote.getIdLote());
-        CompraDetalle det = new CompraDetalle();
-        det.setId(detId);
-        det.setCompra(compra);
-        det.setProducto(prod);
-        det.setLote(lote);
-        det.setCantidad(it.cantidad());
-        det.setCostoUnitario(it.costoUnitario());
-        det.setFechaVencimiento(it.fechaVencimiento());
-        compraDetRepo.save(det);
-
-        total = total.add(it.costoUnitario().multiply(BigDecimal.valueOf(it.cantidad())));
-    }
-
-    compra.setTotal(total);
-    compraRepo.save(compra);
-
-    // Pago inicial (opcional)
-    if (dto.pagoInicial() != null && dto.pagoInicial().compareTo(BigDecimal.ZERO) > 0) {
-        if (dto.pagoInicial().compareTo(total) > 0) {
-            throw new BadRequestException("Pago inicial mayor al total");
-        }
-        PagoCompra pago = new PagoCompra();
-        pago.setCompra(compra);
-        pago.setMetodo("EFECTIVO");
-        pago.setMonto(dto.pagoInicial());
-        pagoCompraRepo.save(pago);
-    }
-
-    // Actualizar estado
-    BigDecimal pagado = pagoCompraRepo.sumByCompraId(compra.getIdCompra()).orElse(BigDecimal.ZERO);
-    if (pagado.compareTo(BigDecimal.ZERO) == 0) {
+        Compra compra = new Compra();
+        compra.setProveedor(prov);
+        compra.setFechaHora(LocalDateTime.now());
+        compra.setCondicion(dto.condicion() == null ? "CONTADO" : dto.condicion().toUpperCase());
         compra.setEstado("ABIERTA");
-    } else if (pagado.compareTo(total) < 0) {
-        compra.setEstado("PARCIAL");
-    } else {
-        compra.setEstado("PAGADA");
-    }
-    compraRepo.save(compra);
+        compra.setObservacion(dto.observacion());
+        compra.setTotal(BigDecimal.ZERO);
+        compra = compraRepo.save(compra); // obtener idCompra antes de los detalles
 
-    return compra.getIdCompra();
-}
-@Override
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (CompraItemDTO it : dto.items()) {
+            Producto prod = productoRepo.findById(it.idProducto())
+                    .orElseThrow(() -> new NotFoundException("Producto no encontrado: " + it.idProducto()));
+
+            if (it.cantidad() <= 0) {
+                throw new BadRequestException("Cantidad inválida");
+            }
+            if (it.costoUnitario().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new BadRequestException("Costo inválido");
+            }
+
+            // Crear lote
+            Lote lote = new Lote();
+            lote.setProducto(prod);
+            lote.setFechaVencimiento(it.fechaVencimiento());
+            lote.setCantidadDisponible(it.cantidad());
+            lote = loteRepo.save(lote);
+
+            // Actualizar stock del producto
+            prod.setStock(prod.getStock() + it.cantidad());
+            productoRepo.save(prod);
+
+            // Crear detalle (id compuesto completo)
+            CompraDetalleId detId = new CompraDetalleId(compra.getIdCompra(), prod.getIdProducto(), lote.getIdLote());
+            CompraDetalle det = new CompraDetalle();
+            det.setId(detId);
+            det.setCompra(compra);
+            det.setProducto(prod);
+            det.setLote(lote);
+            det.setCantidad(it.cantidad());
+            det.setCostoUnitario(it.costoUnitario());
+            det.setFechaVencimiento(it.fechaVencimiento());
+            compraDetRepo.save(det);
+
+            total = total.add(it.costoUnitario().multiply(BigDecimal.valueOf(it.cantidad())));
+        }
+
+        compra.setTotal(total);
+        compraRepo.save(compra);
+
+        // Pago inicial (opcional)
+        if (dto.pagoInicial() != null && dto.pagoInicial().compareTo(BigDecimal.ZERO) > 0) {
+            if (dto.pagoInicial().compareTo(total) > 0) {
+                throw new BadRequestException("Pago inicial mayor al total");
+            }
+            PagoCompra pago = new PagoCompra();
+            pago.setCompra(compra);
+            pago.setMetodo("EFECTIVO");
+            pago.setMonto(dto.pagoInicial());
+            pagoCompraRepo.save(pago);
+        }
+
+        // Actualizar estado
+        BigDecimal pagado = pagoCompraRepo.sumByCompraId(compra.getIdCompra()).orElse(BigDecimal.ZERO);
+        if (pagado.compareTo(BigDecimal.ZERO) == 0) {
+            compra.setEstado("ABIERTA");
+        } else if (pagado.compareTo(total) < 0) {
+            compra.setEstado("PARCIAL");
+        } else {
+            compra.setEstado("PAGADA");
+        }
+        compraRepo.save(compra);
+
+        return compra.getIdCompra();
+    }
+
+    @Override
     @Transactional
     public void pagar(Integer idCompra, PagoCompraDTO dto) {
         Compra compra = compraRepo.findById(idCompra)
-            .orElseThrow(() -> new NotFoundException("Compra no encontrada"));
+                .orElseThrow(() -> new NotFoundException("Compra no encontrada"));
 
         if (dto.monto().compareTo(BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("Monto inválido");
