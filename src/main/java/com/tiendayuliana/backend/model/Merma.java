@@ -38,7 +38,7 @@ public class Merma {
     private Integer cantidad;
 
     @Column(nullable = false, length = 15)
-    private String motivo; // DAÑO / VENCIMIENTO / OTRO
+    private String motivo; // DAÑO / VENCIMIENTO / OTRO MOTIVO
 
     @Column(nullable = false)
     private LocalDateTime fecha = LocalDateTime.now();
