@@ -43,4 +43,8 @@ public class VentaController {
         return ResponseEntity.ok(ventaService.listar());
     }
     
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> c11e70210669ec2dbc29fd8e80f5f68d32139f03

@@ -9,8 +9,8 @@ import com.tiendayuliana.backend.dto.ProductUpdateDTO;
 public interface ProductoService {
     ProductResponseDTO crear(ProductCreateDTO dto);
     ProductResponseDTO getById(Integer idProducto);
-    List<ProductResponseDTO> listar(); // simple (sin paginación por ahora)
+    List<ProductResponseDTO> listar();
     List<ProductResponseDTO> stockBajo();
     ProductResponseDTO actualizar(Integer idProducto, ProductUpdateDTO dto);
-    void eliminar(Integer idProducto); // delete físico (tu DDL no impide), o podríamos hacer soft-delete con "activo"
+    void eliminar(Integer idProducto); 
 }
