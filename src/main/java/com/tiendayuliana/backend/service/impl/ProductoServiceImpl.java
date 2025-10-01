@@ -113,7 +113,7 @@ public class ProductoServiceImpl implements ProductoService {
         }
         productoRepository.deleteById(idProducto);
 
-        // (Si quisieras soft-delete, sería: buscar y setActivo(false))
+        
     }
 
     private ProductResponseDTO map(Producto p) {
