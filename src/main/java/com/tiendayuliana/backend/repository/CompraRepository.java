@@ -15,7 +15,7 @@ public interface CompraRepository extends JpaRepository<Compra, Integer> {
         select date(c.fechaHora) as fecha, sum(c.total) as total
         from Compra c
         where c.fechaHora between :inicio and :fin
-          and (:idProveedor is null or c.proveedor.id = :idProveedor)
+          and (:idProveedor is null or c.proveedor.idProveedor = :idProveedor)
         group by date(c.fechaHora)
         order by date(c.fechaHora) asc
     """)

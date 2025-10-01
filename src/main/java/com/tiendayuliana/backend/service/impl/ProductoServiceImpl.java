@@ -28,9 +28,16 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     @Transactional
     public ProductResponseDTO crear(ProductCreateDTO dto) {
-        if (dto.getCodigoBarras() != null && !dto.getCodigoBarras().isBlank()) {
-            productoRepository.findByCodigoBarras(dto.getCodigoBarras().trim())
-                    .ifPresent(p -> { throw new BadRequestException("El código de barras ya existe"); });
+        String codigoBarras = null;
+        if (dto.getCodigoBarras() != null) {
+            codigoBarras = dto.getCodigoBarras().trim();
+            if (codigoBarras.isEmpty()) {
+                codigoBarras = null;
+            } else {
+                String finalCodigo = codigoBarras;
+                productoRepository.findByCodigoBarras(finalCodigo)
+                        .ifPresent(p -> { throw new BadRequestException("El código de barras ya existe"); });
+            }
         }
         Proveedor proveedor = null;
         if (dto.getIdProveedor() != null) {
@@ -39,7 +46,7 @@ public class ProductoServiceImpl implements ProductoService {
         }
         Producto p = new Producto();
         p.setNombre(dto.getNombre().trim());
-        p.setCodigoBarras(dto.getCodigoBarras()==null? null : dto.getCodigoBarras().trim());
+        p.setCodigoBarras(codigoBarras);
         p.setPrecioVenta(dto.getPrecioVenta());
         p.setCostoActual(dto.getCostoActual());
         p.setStock(dto.getStock());
@@ -130,8 +137,9 @@ public class ProductoServiceImpl implements ProductoService {
         );
     }
     @Override
+    @Transactional(readOnly = true)
     public List<ProductResponseDTO> stockBajo() {
         return productoRepository.findStockBajo().stream().map(this::map).toList();
     }
-    
+
 }
