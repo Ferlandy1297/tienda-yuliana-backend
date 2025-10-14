@@ -51,4 +51,34 @@ public class VentaController {
                                                           @Valid @RequestBody PagoCreateDTO dto) {
         return ResponseEntity.ok(ventaService.registrarPago(id, dto));
     }
+
+    @GetMapping("/{id}/comprobante.pdf")
+    public org.springframework.http.ResponseEntity<byte[]> comprobante(@PathVariable Integer id) throws Exception {
+        // Generación simple de PDF con OpenPDF
+        var venta = ventaService.getById(id);
+        var baos = new java.io.ByteArrayOutputStream();
+        var doc = new com.lowagie.text.Document();
+        com.lowagie.text.pdf.PdfWriter.getInstance(doc, baos);
+        doc.open();
+        doc.add(new com.lowagie.text.Paragraph("Comprobante de Venta #" + venta.idVenta()));
+        doc.add(new com.lowagie.text.Paragraph("Fecha: " + venta.fechaHora()));
+        doc.add(new com.lowagie.text.Paragraph("Tipo: " + venta.tipo()));
+        doc.add(new com.lowagie.text.Paragraph("Total: " + venta.total()));
+        com.lowagie.text.Table table = new com.lowagie.text.Table(5);
+        table.addCell("Producto"); table.addCell("Lote"); table.addCell("Cant"); table.addCell("Precio"); table.addCell("Desc");
+        for (var d : venta.detalles()) {
+            table.addCell(String.valueOf(d.idProducto()));
+            table.addCell(String.valueOf(d.idLote()));
+            table.addCell(String.valueOf(d.cantidad()));
+            table.addCell(String.valueOf(d.precioUnitario()));
+            table.addCell(String.valueOf(d.descuento()));
+        }
+        doc.add(table);
+        doc.close();
+        byte[] pdf = baos.toByteArray();
+        return org.springframework.http.ResponseEntity.ok()
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition", "inline; filename=comprobante-"+id+".pdf")
+                .body(pdf);
+    }
 }
