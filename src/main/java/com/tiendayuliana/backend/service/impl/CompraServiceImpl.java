@@ -3,6 +3,7 @@ package com.tiendayuliana.backend.service.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,15 +30,20 @@ import com.tiendayuliana.backend.service.CompraService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class CompraServiceImpl implements CompraService {
 
-    private final CompraRepository compraRepo;
-    private final CompraDetalleRepository compraDetRepo;
-    private final PagoCompraRepository pagoCompraRepo;
-    private final ProveedorRepository proveedorRepo;
-    private final ProductoRepository productoRepo;
-    private final LoteRepository loteRepo;
+    @Autowired
+    private CompraRepository compraRepo;
+    @Autowired
+    private CompraDetalleRepository compraDetRepo;
+    @Autowired
+    private PagoCompraRepository pagoCompraRepo;
+    @Autowired
+    private ProveedorRepository proveedorRepo;
+    @Autowired
+    private ProductoRepository productoRepo;
+    @Autowired
+    private LoteRepository loteRepo;
     @Override
     @Transactional
     public Integer crearCompra(CompraCreateDTO dto) {
@@ -46,7 +52,6 @@ public class CompraServiceImpl implements CompraService {
 
         Compra compra = new Compra();
         compra.setProveedor(prov);
-        compra.setFechaHora(LocalDateTime.now());
         compra.setCondicion(dto.condicion() == null ? "CONTADO" : dto.condicion().toUpperCase());
         compra.setEstado("ABIERTA");
         compra.setObservacion(dto.observacion());
@@ -67,10 +72,7 @@ public class CompraServiceImpl implements CompraService {
             }
 
             // Crear lote
-            Lote lote = new Lote();
-            lote.setProducto(prod);
-            lote.setFechaVencimiento(it.fechaVencimiento());
-            lote.setCantidadDisponible(it.cantidad());
+            Lote lote = new Lote(null, prod, it.fechaVencimiento(), it.cantidad());
             lote = loteRepo.save(lote);
 
             // Actualizar stock del producto
@@ -78,7 +80,10 @@ public class CompraServiceImpl implements CompraService {
             productoRepo.save(prod);
 
             // Crear detalle (id compuesto completo)
-            CompraDetalleId detId = new CompraDetalleId(compra.getIdCompra(), prod.getIdProducto(), lote.getIdLote());
+            CompraDetalleId detId = new CompraDetalleId();
+            detId.setIdCompra(compra.getIdCompra());
+            detId.setIdProducto(prod.getIdProducto());
+            detId.setIdLote(lote.getIdLote());
             CompraDetalle det = new CompraDetalle();
             det.setId(detId);
             det.setCompra(compra);

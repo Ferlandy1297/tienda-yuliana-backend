@@ -13,11 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data @NoArgsConstructor @AllArgsConstructor
 @Entity @Table(name = "pago_compra", schema = "tienda_yuliana")
 public class PagoCompra {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +35,55 @@ public class PagoCompra {
 
     @Column(length = 200)
     private String observacion;
+
+    public PagoCompra() {}
+
+    // Getters and Setters
+    public Integer getIdPagoCompra() {
+        return idPagoCompra;
+    }
+
+    public void setIdPagoCompra(Integer idPagoCompra) {
+        this.idPagoCompra = idPagoCompra;
+    }
+
+    public Compra getCompra() {
+        return compra;
+    }
+
+    public void setCompra(Compra compra) {
+        this.compra = compra;
+    }
+
+    public String getMetodo() {
+        return metodo;
+    }
+
+    public void setMetodo(String metodo) {
+        this.metodo = metodo;
+    }
+
+    public BigDecimal getMonto() {
+        return monto;
+    }
+
+    public void setMonto(BigDecimal monto) {
+        this.monto = monto;
+    }
+
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
+    }
+
+    public void setFechaHora(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
 }

@@ -1,0 +1,316 @@
+openapi: 3.0.3
+info:
+  title: Tienda Yuliana API (Generated)
+  version: 0.1.0
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      responses:
+        '200': { description: OK }
+  /api/auth/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LoginResponse' }
+  /api/productos:
+    get:
+      summary: Listar productos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ProductResponseDTO' }
+    post:
+      summary: Crear producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProductCreateDTO' }
+      responses:
+        '201': { description: Created }
+  /api/productos/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer }
+    get:
+      summary: Obtener producto
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductResponseDTO' }
+    put:
+      summary: Actualizar producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProductUpdateDTO' }
+      responses:
+        '200': { description: OK }
+    delete:
+      summary: Eliminar (soft) producto
+      responses:
+        '204': { description: No Content }
+  /api/productos/stock-bajo:
+    get:
+      summary: Productos con stock bajo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ProductResponseDTO' }
+  /api/ventas:
+    get:
+      summary: Listar ventas
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Crear venta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VentaCreateDTO' }
+      responses:
+        '201': { description: Created }
+  /api/ventas/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer }
+    get:
+      summary: Obtener venta
+      responses:
+        '200': { description: OK }
+  /api/ventas/{id}/pagos:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer }
+    post:
+      summary: Registrar pago de venta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PagoCreateDTO' }
+      responses:
+        '200': { description: OK }
+  /api/compras:
+    post:
+      summary: Registrar compra
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CompraCreateDTO' }
+      responses:
+        '201': { description: Created }
+  /api/compras/{id}/pagos:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer }
+    post:
+      summary: Pago de compra
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PagoCompraDTO' }
+      responses:
+        '200': { description: OK }
+  /api/reportes/ventas:
+    get:
+      summary: Reporte de ventas
+      parameters:
+        - in: query
+          name: periodo
+          required: true
+          schema: { type: string, enum: [diario, quincenal, mensual] }
+      responses:
+        '200': { description: OK }
+  /api/reportes/compras:
+    get:
+      summary: Reporte de compras
+      parameters:
+        - in: query
+          name: desde
+          schema: { type: string, format: date }
+        - in: query
+          name: hasta
+          schema: { type: string, format: date }
+        - in: query
+          name: proveedorId
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+  /api/lotes/por-vencer:
+    get:
+      summary: Lotes por vencer
+      parameters:
+        - in: query
+          name: dias
+          schema: { type: integer, default: 30 }
+      responses:
+        '200': { description: OK }
+  /api/acciones/caducidad:
+    post:
+      summary: Aplicar acciones de caducidad
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: OK }
+  /api/mermas:
+    post:
+      summary: Registrar merma
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: OK }
+  /api/devoluciones:
+    post:
+      summary: Registrar devolución a proveedor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201': { description: Created }
+  /api/cuentas/{id}/abonos:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer }
+    post:
+      summary: Registrar abono de cuenta corriente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: OK }
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        nombreUsuario: { type: string }
+        password: { type: string }
+      required: [nombreUsuario, password]
+    LoginResponse:
+      type: object
+      properties:
+        idUsuario: { type: integer }
+        nombreUsuario: { type: string }
+        rol: { type: string }
+    ProductCreateDTO:
+      type: object
+      properties:
+        nombre: { type: string }
+        codigoBarras: { type: string }
+        precioVenta: { type: number, format: double }
+        costoActual: { type: number, format: double }
+        stock: { type: integer }
+        stockMinimo: { type: integer }
+        idProveedor: { type: integer }
+      required: [nombre, precioVenta, costoActual, stock, stockMinimo]
+    ProductUpdateDTO:
+      allOf: [{ $ref: '#/components/schemas/ProductCreateDTO' }]
+    ProductResponseDTO:
+      type: object
+      properties:
+        idProducto: { type: integer }
+        nombre: { type: string }
+        codigoBarras: { type: string }
+        precioVenta: { type: number, format: double }
+        costoActual: { type: number, format: double }
+        stock: { type: integer }
+        stockMinimo: { type: integer }
+        idProveedor: { type: integer }
+        activo: { type: boolean }
+    VentaCreateDTO:
+      type: object
+      properties:
+        tipo: { type: string, enum: [DETALLE, MAYOREO, FIADO] }
+        idCliente: { type: integer }
+        idUsuario: { type: integer }
+        detalles:
+          type: array
+          items:
+            type: object
+            properties:
+              idProducto: { type: integer }
+              idLote: { type: integer }
+              cantidad: { type: integer }
+              precioUnitario: { type: number, format: double }
+              descuento: { type: number, format: double }
+        pago: { $ref: '#/components/schemas/PagoCreateDTO' }
+      required: [tipo, idUsuario, detalles]
+    PagoCreateDTO:
+      type: object
+      properties:
+        metodo: { type: string, default: EFECTIVO }
+        montoEntregado: { type: number, format: double }
+        denominacionBillete: { type: number, format: double }
+      required: [montoEntregado]
+    CompraCreateDTO:
+      type: object
+      properties:
+        idProveedor: { type: integer }
+        condicion: { type: string, enum: [CONTADO, CREDITO] }
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              idProducto: { type: integer }
+              cantidad: { type: integer }
+              costoUnitario: { type: number, format: double }
+              fechaVencimiento: { type: string, format: date }
+        pagoInicial: { type: number, format: double }
+        observacion: { type: string }
+      required: [idProveedor, items]
+    PagoCompraDTO:
+      type: object
+      properties:
+        monto: { type: number, format: double }
+        observacion: { type: string }
+      required: [monto]

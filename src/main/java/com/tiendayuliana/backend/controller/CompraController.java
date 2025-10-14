@@ -13,11 +13,14 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/compras")
-@RequiredArgsConstructor
 @Validated
 public class CompraController {
 
     private final CompraService compraService;
+
+    public CompraController(CompraService compraService) {
+        this.compraService = compraService;
+    }
 
     @PostMapping
     public ResponseEntity<Object> crear(@RequestBody @jakarta.validation.Valid CompraCreateDTO dto) {

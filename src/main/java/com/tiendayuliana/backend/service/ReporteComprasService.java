@@ -10,12 +10,13 @@ import org.springframework.stereotype.Service;
 import com.tiendayuliana.backend.dto.reportes.ReporteComprasDTO;
 import com.tiendayuliana.backend.repository.CompraRepository;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class ReporteComprasService {
     private final CompraRepository compraRepository;
+
+    public ReporteComprasService(CompraRepository compraRepository) {
+        this.compraRepository = compraRepository;
+    }
 
     public List<ReporteComprasDTO> compras(LocalDate desde, LocalDate hasta, Integer proveedorId) {
         LocalDateTime ini = desde.atStartOfDay();

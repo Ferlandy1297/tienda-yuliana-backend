@@ -10,15 +10,16 @@ import com.tiendayuliana.backend.dto.auth.LoginRequest;
 import com.tiendayuliana.backend.dto.auth.LoginResponse;
 import com.tiendayuliana.backend.service.AuthService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 @Validated
 public class AuthController {
 
     private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody @jakarta.validation.Valid LoginRequest req) {

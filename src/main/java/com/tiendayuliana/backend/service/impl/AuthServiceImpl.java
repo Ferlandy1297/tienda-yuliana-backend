@@ -12,14 +12,15 @@ import com.tiendayuliana.backend.model.UsuarioSis;
 import com.tiendayuliana.backend.repository.UsuarioSisRepository;
 import com.tiendayuliana.backend.service.AuthService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final UsuarioSisRepository usuarioSisRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    public AuthServiceImpl(UsuarioSisRepository usuarioSisRepository) {
+        this.usuarioSisRepository = usuarioSisRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)

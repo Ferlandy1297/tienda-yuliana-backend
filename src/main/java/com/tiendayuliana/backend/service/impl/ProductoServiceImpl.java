@@ -16,14 +16,15 @@ import com.tiendayuliana.backend.repository.ProductoRepository;
 import com.tiendayuliana.backend.repository.ProveedorRepository;
 import com.tiendayuliana.backend.service.ProductoService;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
-@RequiredArgsConstructor
 public class ProductoServiceImpl implements ProductoService {
 
-    private final ProductoRepository productoRepository;
-    private final ProveedorRepository proveedorRepository;
+    @Autowired
+    private ProductoRepository productoRepository;
+    @Autowired
+    private ProveedorRepository proveedorRepository;
 
     @Override
     @Transactional
@@ -35,7 +36,7 @@ public class ProductoServiceImpl implements ProductoService {
                 codigoBarras = null;
             } else {
                 String finalCodigo = codigoBarras;
-                productoRepository.findByCodigoBarras(finalCodigo)
+                productoRepository.findByCodigoBarrasAndActivoTrue(finalCodigo)
                         .ifPresent(p -> { throw new BadRequestException("El código de barras ya existe"); });
             }
         }
@@ -68,7 +69,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     @Transactional(readOnly = true)
     public List<ProductResponseDTO> listar() {
-        return productoRepository.findAll()
+        return productoRepository.findByActivoTrue()
                 .stream().map(this::map).toList();
     }
 
@@ -81,7 +82,7 @@ public class ProductoServiceImpl implements ProductoService {
         // validar unicidad de código de barras si cambia y no es vacío
         if (dto.getCodigoBarras() != null && !dto.getCodigoBarras().isBlank()) {
             var cb = dto.getCodigoBarras().trim();
-            productoRepository.findByCodigoBarras(cb)
+            productoRepository.findByCodigoBarrasAndActivoTrue(cb)
                     .filter(x -> !x.getIdProducto().equals(idProducto))
                     .ifPresent(x -> { throw new BadRequestException("El código de barras ya existe"); });
             p.setCodigoBarras(cb);
@@ -114,13 +115,10 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     @Transactional
     public void eliminar(Integer idProducto) {
-        // Físico:
-        if (!productoRepository.existsById(idProducto)) {
-            throw new NotFoundException("Producto no encontrado");
-        }
-        productoRepository.deleteById(idProducto);
-
-        
+        Producto p = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
+        p.setActivo(false);
+        productoRepository.save(p);
     }
 
     private ProductResponseDTO map(Producto p) {

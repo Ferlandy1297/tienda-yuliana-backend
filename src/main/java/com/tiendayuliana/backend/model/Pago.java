@@ -13,11 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data @NoArgsConstructor @AllArgsConstructor
 @Entity @Table(name = "pago", schema = "tienda_yuliana")
 public class Pago {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,4 +41,71 @@ public class Pago {
 
     @Column(length = 200)
     private String observacion;
+
+    public Pago() {}
+
+    // Getters and Setters
+    public Integer getIdPago() {
+        return idPago;
+    }
+
+    public void setIdPago(Integer idPago) {
+        this.idPago = idPago;
+    }
+
+    public Venta getVenta() {
+        return venta;
+    }
+
+    public void setVenta(Venta venta) {
+        this.venta = venta;
+    }
+
+    public String getMetodo() {
+        return metodo;
+    }
+
+    public void setMetodo(String metodo) {
+        this.metodo = metodo;
+    }
+
+    public BigDecimal getMontoEntregado() {
+        return montoEntregado;
+    }
+
+    public void setMontoEntregado(BigDecimal montoEntregado) {
+        this.montoEntregado = montoEntregado;
+    }
+
+    public BigDecimal getCambioCalculado() {
+        return cambioCalculado;
+    }
+
+    public void setCambioCalculado(BigDecimal cambioCalculado) {
+        this.cambioCalculado = cambioCalculado;
+    }
+
+    public BigDecimal getDenominacionBillete() {
+        return denominacionBillete;
+    }
+
+    public void setDenominacionBillete(BigDecimal denominacionBillete) {
+        this.denominacionBillete = denominacionBillete;
+    }
+
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
+    }
+
+    public void setFechaHora(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
 }

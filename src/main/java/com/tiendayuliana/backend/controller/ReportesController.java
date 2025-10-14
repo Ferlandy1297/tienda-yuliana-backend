@@ -14,15 +14,18 @@ import com.tiendayuliana.backend.exception.BadRequestException;
 import com.tiendayuliana.backend.service.ReporteComprasService;
 import com.tiendayuliana.backend.service.ReporteService;
 
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/reportes")
-@RequiredArgsConstructor
 public class ReportesController {
 
     private final ReporteService reporteService;
     private final ReporteComprasService reporteComprasService;
+
+    public ReportesController(ReporteService reporteService, ReporteComprasService reporteComprasService) {
+        this.reporteService = reporteService;
+        this.reporteComprasService = reporteComprasService;
+    }
 
     @GetMapping("/ventas")
     public ReporteVentasDTO ventas(@RequestParam String periodo) {

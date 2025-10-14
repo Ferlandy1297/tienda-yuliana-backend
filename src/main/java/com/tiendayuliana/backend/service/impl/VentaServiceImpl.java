@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,19 +33,28 @@ import com.tiendayuliana.backend.repository.VentaDetalleRepository;
 import com.tiendayuliana.backend.repository.VentaRepository;
 import com.tiendayuliana.backend.service.VentaService;
 
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class VentaServiceImpl implements VentaService {
 
-    private final VentaRepository ventaRepository;
-    private final VentaDetalleRepository ventaDetalleRepository;
-    private final PagoRepository pagoRepository;
-    private final ProductoRepository productoRepository;
-    private final LoteRepository loteRepository;
-    private final ClienteRepository clienteRepository;
-    private final UsuarioSisRepository usuarioSisRepository;
+    @Autowired
+    private VentaRepository ventaRepository;
+    @Autowired
+    private VentaDetalleRepository ventaDetalleRepository;
+    @Autowired
+    private PagoRepository pagoRepository;
+    @Autowired
+    private ProductoRepository productoRepository;
+    @Autowired
+    private LoteRepository loteRepository;
+    @Autowired
+    private ClienteRepository clienteRepository;
+    @Autowired
+    private UsuarioSisRepository usuarioSisRepository;
+    @Autowired
+    private com.tiendayuliana.backend.repository.CuentaCorrienteRepository cuentaCorrienteRepository;
+    @Autowired
+    private com.tiendayuliana.backend.repository.MovimientoCcRepository movimientoCcRepository;
 
     // Helper para retorno de consumos FIFO
     private static record ConsumoFIFO(Lote lote, int tomado) {}
@@ -76,14 +86,13 @@ public class VentaServiceImpl implements VentaService {
             if (cliente == null) {
                 throw new BadRequestException("Las ventas al por mayor requieren un cliente registrado");
             }
-            if (Boolean.FALSE.equals(cliente.getEsMayorista())) {
+            if (!cliente.isEsMayorista()) {
                 throw new BadRequestException("El cliente seleccionado no es mayorista");
             }
         }
 
         // Crear venta
         Venta venta = new Venta();
-        venta.setFechaHora(LocalDateTime.now());
         venta.setTipo(tipo);
         venta.setTotal(BigDecimal.ZERO);
         venta.setCliente(cliente);
@@ -223,6 +232,23 @@ public class VentaServiceImpl implements VentaService {
             throw new BadRequestException("Pago requerido salvo para ventas FIADO");
         }
 
+        // Ventas a crédito (FIADO): validar límite y registrar CARGO en cuenta corriente
+        if ("FIADO".equalsIgnoreCase(tipo)) {
+            var cuenta = cuentaCorrienteRepository.findByCliente_IdCliente(cliente.getIdCliente())
+                    .orElseThrow(() -> new BadRequestException("Cliente sin cuenta corriente"));
+            BigDecimal saldo = movimientoCcRepository.saldoActual(cuenta.getIdCuenta());
+            BigDecimal limite = cliente.getLimiteCredito() == null ? BigDecimal.ZERO : cliente.getLimiteCredito();
+            if (saldo.add(total).compareTo(limite) > 0) {
+                throw new BadRequestException("Límite de crédito excedido");
+            }
+            com.tiendayuliana.backend.model.MovimientoCc mov = new com.tiendayuliana.backend.model.MovimientoCc();
+            mov.setCuenta(cuenta);
+            mov.setTipo("CARGO");
+            mov.setMonto(total);
+            mov.setReferencia("Venta " + venta.getIdVenta());
+            movimientoCcRepository.save(mov);
+        }
+
         return new VentaResponseDTO(
                 venta.getIdVenta(),
                 venta.getTipo(),
@@ -332,5 +358,84 @@ public class VentaServiceImpl implements VentaService {
             return prod.getPrecioVenta().multiply(BigDecimal.valueOf(0.9));
         }
         return prod.getPrecioVenta();
+    }
+
+    @Override
+    @Transactional
+    public VentaResponseDTO registrarPago(Integer idVenta, PagoCreateDTO p) {
+        Venta venta = ventaRepository.findById(idVenta)
+                .orElseThrow(() -> new NotFoundException("Venta no encontrada"));
+
+        // Evitar doble pago por diseño actual (un pago por venta)
+        pagoRepository.findFirstByVenta_IdVentaOrderByFechaHoraAsc(idVenta)
+                .ifPresent(x -> { throw new BadRequestException("La venta ya tiene un pago registrado"); });
+
+        if (p.getMetodo() != null && !"EFECTIVO".equalsIgnoreCase(p.getMetodo())) {
+            throw new BadRequestException("método de pago no soportado: solo EFECTIVO");
+        }
+
+        if (p.getMontoEntregado() == null || p.getMontoEntregado().compareTo(BigDecimal.ZERO) < 0) {
+            throw new BadRequestException("Monto entregado inválido");
+        }
+
+        BigDecimal total = venta.getTotal();
+        BigDecimal cambio = p.getMontoEntregado().subtract(total);
+        if (cambio.compareTo(BigDecimal.ZERO) < 0) {
+            throw new BadRequestException("Monto entregado insuficiente");
+        }
+
+        // Validar denominaciones soportadas
+        if (p.getDenominacionBillete() != null) {
+            var denom = p.getDenominacionBillete();
+            java.util.Set<BigDecimal> soportadas = java.util.Set.of(
+                    new BigDecimal("0.50"),
+                    new BigDecimal("1"), new BigDecimal("5"), new BigDecimal("10"),
+                    new BigDecimal("20"), new BigDecimal("50"), new BigDecimal("100"), new BigDecimal("200")
+            );
+            if (soportadas.stream().noneMatch(d -> d.compareTo(denom) == 0)) {
+                throw new BadRequestException("Denominación no soportada");
+            }
+            // montoEntregado debe ser múltiplo de la denominación
+            BigDecimal[] div = p.getMontoEntregado().divideAndRemainder(denom);
+            if (div[1].compareTo(BigDecimal.ZERO) != 0) {
+                throw new BadRequestException("El monto entregado debe ser múltiplo de la denominación informada");
+            }
+        }
+
+        Pago pago = new Pago();
+        pago.setVenta(venta);
+        pago.setMetodo("EFECTIVO");
+        pago.setMontoEntregado(p.getMontoEntregado());
+        pago.setCambioCalculado(cambio);
+        pago.setDenominacionBillete(p.getDenominacionBillete());
+        pago.setFechaHora(LocalDateTime.now());
+        pago = pagoRepository.save(pago);
+
+        var dets = ventaDetalleRepository.findAllByVenta_IdVenta(idVenta);
+        var detallesOut = dets.stream().map(d ->
+                new VentaResponseDTO.DetalleOut(
+                        d.getProducto().getIdProducto(),
+                        d.getLote() == null ? null : d.getLote().getIdLote(),
+                        d.getCantidad(),
+                        d.getPrecioUnitario(),
+                        d.getDescuento()
+                )
+        ).toList();
+
+        var pagoOut = new VentaResponseDTO.PagoOut(
+                pago.getIdPago(), pago.getMetodo(),
+                pago.getMontoEntregado(), pago.getCambioCalculado()
+        );
+
+        return new VentaResponseDTO(
+                venta.getIdVenta(),
+                venta.getTipo(),
+                venta.getCliente() == null ? null : venta.getCliente().getIdCliente(),
+                venta.getUsuario().getIdUsuario(),
+                venta.getFechaHora(),
+                venta.getTotal(),
+                detallesOut,
+                pagoOut
+        );
     }
 }

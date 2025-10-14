@@ -19,14 +19,16 @@ import com.tiendayuliana.backend.dto.ProductUpdateDTO;
 import com.tiendayuliana.backend.service.ProductoService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/productos")
-@RequiredArgsConstructor
 public class ProductoController {
 
     private final ProductoService productoService;
+
+    public ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
+    }
 
     @PostMapping
     public ResponseEntity<ProductResponseDTO> crear(@Valid @RequestBody ProductCreateDTO dto) {

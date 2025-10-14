@@ -9,5 +9,7 @@ import com.tiendayuliana.backend.dto.venta.VentaResponseDTO;
 public interface VentaService {
     VentaResponseDTO crear(VentaCreateDTO dto);
     VentaResponseDTO getById(Integer idVenta);
-    List<VentaListItemDTO> listar();  
+    List<VentaListItemDTO> listar();
+    // TODO: validar reglas adicionales según CU-TY-012
+    VentaResponseDTO registrarPago(Integer idVenta, com.tiendayuliana.backend.dto.venta.PagoCreateDTO dto);
 }
