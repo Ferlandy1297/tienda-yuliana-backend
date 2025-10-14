@@ -29,15 +29,18 @@ public class DevolucionProveedorServiceImpl implements DevolucionProveedorServic
     private final ProveedorRepository provRepo;
     private final ProductoRepository productoRepo;
     private final LoteRepository loteRepo;
+    private final com.tiendayuliana.backend.service.StockNotificationService stockNotificationService;
 
     public DevolucionProveedorServiceImpl(DevolucionProveedorRepository devRepo, DevolucionDetalleRepository detRepo,
                                           ProveedorRepository provRepo, ProductoRepository productoRepo,
-                                          LoteRepository loteRepo) {
+                                          LoteRepository loteRepo,
+                                          com.tiendayuliana.backend.service.StockNotificationService stockNotificationService) {
         this.devRepo = devRepo;
         this.detRepo = detRepo;
         this.provRepo = provRepo;
         this.productoRepo = productoRepo;
         this.loteRepo = loteRepo;
+        this.stockNotificationService = stockNotificationService;
     }
 
     @Override
@@ -99,6 +102,7 @@ public class DevolucionProveedorServiceImpl implements DevolucionProveedorServic
 
         dev.setTotalEstimado(total);
         devRepo.save(dev);
+        stockNotificationService.notifyIfLowStock();
         return dev.getIdDevolucion();
     }
 }

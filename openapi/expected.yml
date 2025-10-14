@@ -11,6 +11,11 @@ paths:
   /api/ventas/{id}/pagos: {}
   /api/auth/login: {}
   /api/reportes/ventas: {}
+  /api/reportes/ventas.pdf: {}
+  /api/reportes/ventas.xlsx: {}
+  /api/ventas/{id}/comprobante.pdf: {}
+  /api/reportes/utilidades: {}
+  /api/reportes/top-productos: {}
   /api/reportes/compras: {}
   /api/compras: {}
   /api/compras/{id}/pagos: {}
@@ -20,6 +25,12 @@ paths:
   /api/acciones/caducidad: {}
   /api/mermas: {}
   /api/devoluciones: {}
+  /api/clientes: {}
+  /api/clientes/{id}: {}
+  /api/proveedores: {}
+  /api/proveedores/{id}: {}
+  /api/promociones: {}
+  /api/notificaciones/stock-bajo/send: {}
+  /api/analytics/dashboard: {}
 components:
   schemas: {}
-

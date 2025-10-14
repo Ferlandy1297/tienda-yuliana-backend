@@ -314,3 +314,93 @@ components:
         monto: { type: number, format: double }
         observacion: { type: string }
       required: [monto]
+  /api/ventas/{id}/comprobante.pdf:
+    get:
+      summary: Comprobante PDF de venta
+      responses:
+        '200': { description: OK }
+  /api/reportes/utilidades:
+    get:
+      summary: Reporte de utilidades
+      parameters:
+        - in: query
+          name: desde
+          schema: { type: string, format: date }
+        - in: query
+          name: hasta
+          schema: { type: string, format: date }
+      responses:
+        '200': { description: OK }
+  /api/reportes/top-productos:
+    get:
+      summary: Top productos vendidos
+      parameters:
+        - in: query
+          name: desde
+          schema: { type: string, format: date }
+        - in: query
+          name: hasta
+          schema: { type: string, format: date }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 10 }
+      responses:
+        '200': { description: OK }
+  /api/reportes/ventas.pdf:
+    get:
+      summary: Reporte de ventas PDF
+      parameters:
+        - in: query
+          name: periodo
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/reportes/ventas.xlsx:
+    get:
+      summary: Reporte de ventas Excel
+      parameters:
+        - in: query
+          name: periodo
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/promociones:
+    get:
+      summary: Listar promociones
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Crear promoción
+      responses:
+        '200': { description: OK }
+  /api/clientes:
+    get: { summary: Listar clientes, responses: { '200': { description: OK } } }
+    post: { summary: Crear cliente, responses: { '201': { description: Created } } }
+  /api/clientes/{id}:
+    get: { summary: Obtener cliente, responses: { '200': { description: OK } } }
+    put: { summary: Actualizar cliente, responses: { '200': { description: OK } } }
+    delete: { summary: Eliminar cliente, responses: { '204': { description: No Content } } }
+  /api/proveedores:
+    get: { summary: Listar proveedores, responses: { '200': { description: OK } } }
+    post: { summary: Crear proveedor, responses: { '201': { description: Created } } }
+  /api/proveedores/{id}:
+    get: { summary: Obtener proveedor, responses: { '200': { description: OK } } }
+    put: { summary: Actualizar proveedor, responses: { '200': { description: OK } } }
+    delete: { summary: Eliminar proveedor, responses: { '204': { description: No Content } } }
+  /api/notificaciones/stock-bajo/send:
+    post:
+      summary: Enviar notificación de stock bajo
+      responses:
+        '200': { description: OK }
+  /api/analytics/dashboard:
+    get:
+      summary: Dashboard de analytics
+      parameters:
+        - in: query
+          name: desde
+          schema: { type: string, format: date }
+        - in: query
+          name: hasta
+          schema: { type: string, format: date }
+      responses:
+        '200': { description: OK }

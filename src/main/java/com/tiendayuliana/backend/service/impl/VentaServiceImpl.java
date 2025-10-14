@@ -32,6 +32,7 @@ import com.tiendayuliana.backend.repository.UsuarioSisRepository;
 import com.tiendayuliana.backend.repository.VentaDetalleRepository;
 import com.tiendayuliana.backend.repository.VentaRepository;
 import com.tiendayuliana.backend.service.VentaService;
+import com.tiendayuliana.backend.repository.PromocionRepository;
 
 
 @Service
@@ -52,9 +53,13 @@ public class VentaServiceImpl implements VentaService {
     @Autowired
     private UsuarioSisRepository usuarioSisRepository;
     @Autowired
+    private PromocionRepository promocionRepository;
+    @Autowired
     private com.tiendayuliana.backend.repository.CuentaCorrienteRepository cuentaCorrienteRepository;
     @Autowired
     private com.tiendayuliana.backend.repository.MovimientoCcRepository movimientoCcRepository;
+    @Autowired
+    private com.tiendayuliana.backend.service.StockNotificationService stockNotificationService;
 
     // Helper para retorno de consumos FIFO
     private static record ConsumoFIFO(Lote lote, int tomado) {}
@@ -112,6 +117,16 @@ public class VentaServiceImpl implements VentaService {
             BigDecimal precio = "MAYOREO".equalsIgnoreCase(tipo)
                     ? calcularPrecioMayoreo(prod, it.getCantidad())
                     : precioBase;
+
+            // Aplicar promoción global si activa (sin romper mayoreo)
+            var promoOpt = promocionRepository.findActive(java.time.LocalDate.now());
+            if (promoOpt.isPresent()) {
+                var promo = promoOpt.get();
+                if (promo.getPorcentaje() != null && promo.getPorcentaje().compareTo(BigDecimal.ZERO) > 0) {
+                    BigDecimal factor = BigDecimal.ONE.subtract(promo.getPorcentaje());
+                    precio = precio.multiply(factor);
+                }
+            }
 
             if (it.getIdLote() != null) {
                 // ------- CON LOTE EXPLÍCITO (UN SOLO DETALLE) -------
@@ -427,7 +442,7 @@ public class VentaServiceImpl implements VentaService {
                 pago.getMontoEntregado(), pago.getCambioCalculado()
         );
 
-        return new VentaResponseDTO(
+        VentaResponseDTO respuesta = new VentaResponseDTO(
                 venta.getIdVenta(),
                 venta.getTipo(),
                 venta.getCliente() == null ? null : venta.getCliente().getIdCliente(),
@@ -437,5 +452,7 @@ public class VentaServiceImpl implements VentaService {
                 detallesOut,
                 pagoOut
         );
+        stockNotificationService.notifyIfLowStock();
+        return respuesta;
     }
 }

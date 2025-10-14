@@ -23,3 +23,11 @@ CU-TY-015 Reportes de Compras | GET `/api/reportes/compras` | `ReporteComprasSer
 - Añadir tests de integración para FIADO (control de crédito) y caducidades.
 - Si se requiere multipago en ventas, extender repositorio de pagos para manejar saldos.
 
+## Extras no numerados: OK
+- CRUD Clientes y Proveedores con DTOs, services y controllers; roles: ADMIN CRUD, EMPLEADO/SUPERVISOR solo lectura.
+- Reportes: utilidades y top productos entre rangos de fechas.
+- Comprobante PDF de venta: GET `/api/ventas/{id}/comprobante.pdf` con OpenPDF.
+- Exportaciones: PDF y Excel para ventas por periodo (OpenPDF y Apache POI).
+- Promociones: entidad y endpoints; descuento global aplicado sin romper mayoreo.
+- Notificaciones por email: EmailService + StockNotificationService + endpoint de disparo y hooks tras venta/merma/devolución.
+- Analytics dashboard: ventasPorDia, utilidad, ticketsPromedio.

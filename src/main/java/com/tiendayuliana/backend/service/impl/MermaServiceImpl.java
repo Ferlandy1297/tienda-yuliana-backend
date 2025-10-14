@@ -19,10 +19,13 @@ public class MermaServiceImpl implements MermaService {
 
     private final ProductoRepository productoRepository;
     private final MermaRepository mermaRepository;
+    private final com.tiendayuliana.backend.service.StockNotificationService stockNotificationService;
 
-    public MermaServiceImpl(ProductoRepository productoRepository, MermaRepository mermaRepository) {
+    public MermaServiceImpl(ProductoRepository productoRepository, MermaRepository mermaRepository,
+                            com.tiendayuliana.backend.service.StockNotificationService stockNotificationService) {
         this.productoRepository = productoRepository;
         this.mermaRepository = mermaRepository;
+        this.stockNotificationService = stockNotificationService;
     }
 
     @Override
@@ -48,5 +51,6 @@ public class MermaServiceImpl implements MermaService {
         BigDecimal costo = prod.getCostoActual() == null ? BigDecimal.ZERO : prod.getCostoActual();
         m.setCostoEstimado(costo.multiply(BigDecimal.valueOf(dto.cantidad())));
         mermaRepository.save(m);
+        stockNotificationService.notifyIfLowStock();
     }
 }
