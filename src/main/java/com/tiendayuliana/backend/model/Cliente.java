@@ -9,15 +9,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Entity @Table(name = "cliente", schema = "tienda_yuliana")
 public class Cliente {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_cliente")
     private Integer idCliente;
+
+    public Integer getIdCliente() {
+        return idCliente;
+    }
 
     @Column(nullable = false, length = 120)
     private String nombre;
@@ -29,7 +34,7 @@ public class Cliente {
     private String nit;
 
     @Column(name = "es_mayorista", nullable = false)
-    private Boolean esMayorista = false;
+    private boolean esMayorista = false;
 
     @Column(name = "limite_credito", nullable = false)
     private BigDecimal limiteCredito = BigDecimal.ZERO;
@@ -39,4 +44,14 @@ public class Cliente {
 
     @Column(nullable = false)
     private Boolean activo = true;
+
+    // Getter for esMayorista
+    public boolean isEsMayorista() {
+        return esMayorista;
+    }
+
+    // Setter for esMayorista
+    public void setEsMayorista(boolean esMayorista) {
+        this.esMayorista = esMayorista;
+    }
 }

@@ -13,13 +13,14 @@ import com.tiendayuliana.backend.exception.BadRequestException;
 import com.tiendayuliana.backend.repository.VentaRepository;
 import com.tiendayuliana.backend.service.ReporteService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class ReporteServiceImpl implements ReporteService {
 
     private final VentaRepository ventaRepository;
+
+    public ReporteServiceImpl(VentaRepository ventaRepository) {
+        this.ventaRepository = ventaRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)

@@ -12,6 +12,10 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 
     Optional<Producto> findByCodigoBarras(String codigoBarras);
 
+    Optional<Producto> findByCodigoBarrasAndActivoTrue(String codigoBarras);
+
+    List<Producto> findByActivoTrue();
+
     @Query("select p from Producto p where p.stock <= p.stockMinimo and p.activo = true")
     List<Producto> findStockBajo();
 }

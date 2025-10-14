@@ -17,14 +17,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data @NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 @Entity @Table(name = "compra", schema = "tienda_yuliana")
 public class Compra {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_compra")
     private Integer idCompra;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "id_proveedor", nullable = false,
             foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
     private Proveedor proveedor;
@@ -43,4 +43,61 @@ public class Compra {
 
     @Column(length = 200)
     private String observacion;
+
+    // Getters and Setters
+    public Integer getIdCompra() {
+        return idCompra;
+    }
+
+    public void setIdCompra(Integer idCompra) {
+        this.idCompra = idCompra;
+    }
+
+    public Proveedor getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
+    }
+
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
+    }
+
+    public void setFechaHora(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public String getCondicion() {
+        return condicion;
+    }
+
+    public void setCondicion(String condicion) {
+        this.condicion = condicion;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
 }

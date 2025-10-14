@@ -10,8 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data @NoArgsConstructor @AllArgsConstructor
-@Entity @Table(name = "usuario_sis", schema = "tienda_yuliana")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "usuario_sis", schema = "tienda_yuliana")
 public class UsuarioSis {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
@@ -28,4 +31,40 @@ public class UsuarioSis {
 
     @Column(nullable = false)
     private Boolean activo = true;
+
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
 }

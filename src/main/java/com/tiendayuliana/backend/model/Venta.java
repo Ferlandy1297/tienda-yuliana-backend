@@ -13,11 +13,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data @NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 @Entity @Table(name = "venta", schema = "tienda_yuliana")
 public class Venta {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +38,53 @@ public class Venta {
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_usuario", nullable = false, foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
     private UsuarioSis usuario;
+
+    // Getters and Setters
+    public Integer getIdVenta() {
+        return idVenta;
+    }
+
+    public void setIdVenta(Integer idVenta) {
+        this.idVenta = idVenta;
+    }
+
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
+    }
+
+    public void setFechaHora(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public UsuarioSis getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioSis usuario) {
+        this.usuario = usuario;
+    }
 }

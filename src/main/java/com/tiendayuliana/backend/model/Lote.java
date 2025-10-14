@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data @NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 @Entity @Table(name = "lote", schema = "tienda_yuliana")
 public class Lote {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +32,44 @@ public class Lote {
 
     @Column(name = "cantidad_disponible", nullable = false)
     private Integer cantidadDisponible = 0;
+
+    public Lote(Integer idLote, Producto producto, LocalDate fechaVencimiento, Integer cantidadDisponible) {
+        this.idLote = idLote;
+        this.producto = producto;
+        this.fechaVencimiento = fechaVencimiento;
+        this.cantidadDisponible = cantidadDisponible;
+    }
+
+    // Getters and Setters
+    public Integer getIdLote() {
+        return idLote;
+    }
+
+    public void setIdLote(Integer idLote) {
+        this.idLote = idLote;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
+
+    public LocalDate getFechaVencimiento() {
+        return fechaVencimiento;
+    }
+
+    public void setFechaVencimiento(LocalDate fechaVencimiento) {
+        this.fechaVencimiento = fechaVencimiento;
+    }
+
+    public Integer getCantidadDisponible() {
+        return cantidadDisponible;
+    }
+
+    public void setCantidadDisponible(Integer cantidadDisponible) {
+        this.cantidadDisponible = cantidadDisponible;
+    }
 }

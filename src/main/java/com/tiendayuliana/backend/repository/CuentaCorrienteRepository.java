@@ -3,5 +3,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.tiendayuliana.backend.model.CuentaCorriente;
 public interface CuentaCorrienteRepository extends JpaRepository<CuentaCorriente, Integer> {
-    
+    java.util.Optional<CuentaCorriente> findByCliente_IdCliente(Integer idCliente);
 }

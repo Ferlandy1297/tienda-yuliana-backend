@@ -1,0 +1,23 @@
+{
+  "info": {
+    "name": "Tienda Yuliana - Coverage",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {"name":"Auth Login","request":{"method":"POST","header":[],"body":{"mode":"raw","raw":"{\n  \"nombreUsuario\": \"admin\",\n  \"password\": \"admin\"\n}","options":{"raw":{"language":"json"}}},"url":{"raw":"{{baseUrl}}/api/auth/login","host":["{{baseUrl}}"],"path":["api","auth","login"]}}},
+    {"name":"Crear Producto","request":{"method":"POST","body":{"mode":"raw","raw":"{\n  \"nombre\": \"Galletas\",\n  \"codigoBarras\": \"123456\",\n  \"precioVenta\": 2.5,\n  \"costoActual\": 1.2,\n  \"stock\": 100,\n  \"stockMinimo\": 10\n}","options":{"raw":{"language":"json"}}},"url":{"raw":"{{baseUrl}}/api/productos","host":["{{baseUrl}}"],"path":["api","productos"]}}},
+    {"name":"Stock Bajo","request":{"method":"GET","url":{"raw":"{{baseUrl}}/api/productos/stock-bajo","host":["{{baseUrl}}"],"path":["api","productos","stock-bajo"]}}},
+    {"name":"Crear Venta DETALLE","request":{"method":"POST","body":{"mode":"raw","raw":"{\n  \"tipo\": \"DETALLE\",\n  \"idUsuario\": 1,\n  \"detalles\": [{ \"idProducto\": 1, \"cantidad\": 2 }]\n}","options":{"raw":{"language":"json"}}},"url":{"raw":"{{baseUrl}}/api/ventas","host":["{{baseUrl}}"],"path":["api","ventas"]}}},
+    {"name":"Pago de Venta","request":{"method":"POST","body":{"mode":"raw","raw":"{\n  \"montoEntregado\": 50.0,\n  \"denominacionBillete\": 50.0\n}","options":{"raw":{"language":"json"}}},"url":{"raw":"{{baseUrl}}/api/ventas/1/pagos","host":["{{baseUrl}}"],"path":["api","ventas","1","pagos"]}}},
+    {"name":"Venta FIADO","request":{"method":"POST","body":{"mode":"raw","raw":"{\n  \"tipo\": \"FIADO\",\n  \"idUsuario\": 1,\n  \"idCliente\": 1,\n  \"detalles\": [{ \"idProducto\": 1, \"cantidad\": 1 }]\n}","options":{"raw":{"language":"json"}}},"url":{"raw":"{{baseUrl}}/api/ventas","host":["{{baseUrl}}"],"path":["api","ventas"]}}},
+    {"name":"Reporte Ventas Diario","request":{"method":"GET","url":{"raw":"{{baseUrl}}/api/reportes/ventas?periodo=diario","host":["{{baseUrl}}"],"path":["api","reportes","ventas"],"query":[{"key":"periodo","value":"diario"}]}}},
+    {"name":"Crear Compra","request":{"method":"POST","body":{"mode":"raw","raw":"{\n  \"idProveedor\": 1,\n  \"items\": [{ \"idProducto\": 1, \"cantidad\": 10, \"costoUnitario\": 1.0 }]\n}","options":{"raw":{"language":"json"}}},"url":{"raw":"{{baseUrl}}/api/compras","host":["{{baseUrl}}"],"path":["api","compras"]}}},
+    {"name":"Pago de Compra","request":{"method":"POST","body":{"mode":"raw","raw":"{\n  \"monto\": 5.0\n}","options":{"raw":{"language":"json"}}},"url":{"raw":"{{baseUrl}}/api/compras/1/pagos","host":["{{baseUrl}}"],"path":["api","compras","1","pagos"]}}},
+    {"name":"Reporte Compras","request":{"method":"GET","url":{"raw":"{{baseUrl}}/api/reportes/compras?desde=2025-01-01&hasta=2025-01-31","host":["{{baseUrl}}"],"path":["api","reportes","compras"],"query":[{"key":"desde","value":"2025-01-01"},{"key":"hasta","value":"2025-01-31"}]}}},
+    {"name":"Lotes por Vencer","request":{"method":"GET","url":{"raw":"{{baseUrl}}/api/lotes/por-vencer?dias=30","host":["{{baseUrl}}"],"path":["api","lotes","por-vencer"],"query":[{"key":"dias","value":"30"}]}}},
+    {"name":"Acción por Caducidad","request":{"method":"POST","body":{"mode":"raw","raw":"{\n  \"accion\": \"DONACION\",\n  \"items\": [{\n    \"idLote\": 1, \"cantidad\": 2\n  }]\n}","options":{"raw":{"language":"json"}}},"url":{"raw":"{{baseUrl}}/api/acciones/caducidad","host":["{{baseUrl}}"],"path":["api","acciones","caducidad"]}}},
+    {"name":"Registrar Merma","request":{"method":"POST","body":{"mode":"raw","raw":"{\n  \"idProducto\": 1,\n  \"cantidad\": 1,\n  \"motivo\": \"Vencido\"\n}","options":{"raw":{"language":"json"}}},"url":{"raw":"{{baseUrl}}/api/mermas","host":["{{baseUrl}}"],"path":["api","mermas"]}}},
+    {"name":"Devolución a Proveedor","request":{"method":"POST","body":{"mode":"raw","raw":"{\n  \"idProveedor\": 1,\n  \"items\": [{ \"idProducto\": 1, \"idLote\": 1, \"cantidad\": 1 }]\n}","options":{"raw":{"language":"json"}}},"url":{"raw":"{{baseUrl}}/api/devoluciones","host":["{{baseUrl}}"],"path":["api","devoluciones"]}}},
+    {"name":"Abono Cuenta Corriente","request":{"method":"POST","body":{"mode":"raw","raw":"{\n  \"monto\": 10.0,\n  \"observacion\": \"Abono prueba\"\n}","options":{"raw":{"language":"json"}}},"url":{"raw":"{{baseUrl}}/api/cuentas/1/abonos","host":["{{baseUrl}}"],"path":["api","cuentas","1","abonos"]}}}
+  ]
+}

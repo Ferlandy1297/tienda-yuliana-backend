@@ -1,0 +1,25 @@
+openapi: 3.0.3
+info:
+  title: Tienda Yuliana API (Expected - Full CUs)
+  version: 0.1.0
+paths:
+  /api/productos: {}
+  /api/productos/{id}: {}
+  /api/productos/stock-bajo: {}
+  /api/ventas: {}
+  /api/ventas/{id}: {}
+  /api/ventas/{id}/pagos: {}
+  /api/auth/login: {}
+  /api/reportes/ventas: {}
+  /api/reportes/compras: {}
+  /api/compras: {}
+  /api/compras/{id}/pagos: {}
+  # Should-Have
+  /api/cuentas/{id}/abonos: {}
+  /api/lotes/por-vencer: {}
+  /api/acciones/caducidad: {}
+  /api/mermas: {}
+  /api/devoluciones: {}
+components:
+  schemas: {}
+

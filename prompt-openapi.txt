@@ -1,0 +1,88 @@
+﻿ACTÚA COMO ARQUITECTO FRONTEND SENIOR.
+
+CONTEXTO
+- Backend Spring Boot en http://localhost:8080.
+- Autenticación: POST /api/auth/login devuelve { token, rol, nombreUsuario } (según openapi.json adjunto).
+- Roles: ADMIN y EMPLEADO. ADMIN ve Eliminar, Reportes, Compras; EMPLEADO no.
+- CONTRATO: Te adjunto openapi.json. Es la única fuente de verdad.
+
+OBJETIVO
+Genera un frontend React + Vite + TypeScript + Tailwind + shadcn/ui + TanStack Query + React Hook Form + Zod con:
+- .env  VITE_API_URL=http://localhost:8080
+- Rutas protegidas por rol y acciones visibles según rol.
+- Módulos:
+  1) Login
+  2) Productos (CRUD + stock bajo)
+  3) Ventas (EFECTIVO con cálculo de cambio)
+  4) Reportes de Ventas (filtro por periodo)
+- Tipos TS y esquemas Zod a partir de los schemas del OpenAPI (NO cambies nombres/casing).
+- UX pro: loading/empty, toasts éxito/error, confirm modal para eliminar (solo ADMIN), responsive.
+
+REGLAS INQUEBRANTABLES
+1) Usa EXCLUSIVAMENTE paths, métodos, params y schemas de openapi.json. Prohibido inventar endpoints.
+2) Si algo es ambiguo, HAZ UNA PREGUNTA antes de asumir.
+3) Base fetch: import.meta.env.VITE_API_URL + header Authorization: Bearer <token> si hay sesión.
+4) Separación estricta: hooks/queries en src/api/*.ts (React Query). No mezclar UI con fetch.
+5) TypeScript estricto (sin any). Formularios validados con Zod contra schemas OpenAPI.
+6) 401/403  logout y redirect a /login (manejo centralizado en api/client).
+
+ARQUITECTURA TÉCNICA (RESPÉTALA)
+- Router (React Router v6): /login (pública) y privadas con guard por rol (/productos, /ventas, /reportes).
+- Sesión: src/auth/session.tsx  contexto con { token, rol, nombreUsuario } en localStorage; expone login/logout/hasRole.
+- Guard: src/auth/withRole.tsx wrapper para rutas y para mostrar/ocultar acciones (Eliminar solo ADMIN).
+- Cliente HTTP: src/api/client.ts  fetchJson(baseURL, headers JSON, Authorization si hay token, parse de {message}).
+- React Query: keys ['productos', id], ['ventas'], ['reportes', periodo]; invalidar tras mutaciones.
+- Formularios: RHF + Zod (derivados de OpenAPI).
+- UI: shadcn/ui (Button, Card, Input, Dialog, Table, Badge, Toast).
+- Estados: Spinner, EmptyState, ErrorState, ConfirmDialog, ToastProvider.
+
+PANTALLAS / FLUJOS
+- Login: usuario/password  POST /api/auth/login; guarda token/rol; redirige a /productos.
+- Productos:
+  - List: tabla responsiva (Nombre, Precio, Stock, Activo); búsqueda por nombre (client-side).
+    Acciones: Editar (todos), Eliminar (solo ADMIN, con ConfirmDialog).
+  - Form: crear/editar con DTOs del contrato (ProductCreateDTO, ProductUpdateDTO), validación Zod.
+  - StockBajo: consume /api/productos/stock-bajo.
+- Ventas:
+  - Nueva: agregar líneas (producto, cantidad, precioUnitario, descuento); total; pago EFECTIVO (montoEntregado) y cálculo de cambio; POST /api/ventas con VentaCreateDTO.
+  - Index: lista GET /api/ventas y link a detalle GET /api/ventas/{id} (si existe en contrato).
+- Reportes:
+  - Ventas: filtro select periodo (DIARIO|QUINCENAL|MENSUAL)  GET /api/reportes/ventas?periodo=...
+
+SALIDA (ENTREGABLES EXACTOS)
+Devuélveme árbol bajo /frontend/src y CÓDIGO COMPLETO por archivo en bloques ```ts/tsx```.
+Crea EXACTAMENTE estos archivos (si alguno existe, devuelve DIFF unificado):
+
+/frontend/.env.example
+/frontend/src/main.tsx
+/frontend/src/App.tsx
+/frontend/src/routes.tsx
+/frontend/src/auth/session.tsx
+/frontend/src/auth/withRole.tsx
+/frontend/src/api/client.ts
+/frontend/src/api/auth.ts
+/frontend/src/api/productos.ts
+/frontend/src/api/ventas.ts
+/frontend/src/api/reportes.ts
+/frontend/src/components/ui/DataTable.tsx
+/frontend/src/components/ConfirmDialog.tsx
+/frontend/src/components/ToastProvider.tsx
+/frontend/src/layouts/AppLayout.tsx
+/frontend/src/pages/Login.tsx
+/frontend/src/pages/Productos/List.tsx
+/frontend/src/pages/Productos/Form.tsx
+/frontend/src/pages/Productos/StockBajo.tsx
+/frontend/src/pages/Ventas/Nueva.tsx
+/frontend/src/pages/Ventas/Index.tsx
+/frontend/src/pages/Reportes/Ventas.tsx
+
+REQUISITOS DE IMPLEMENTACIÓN
+- Tipos y Zod: genera a partir de schemas de openapi.json (mismos nombres/casing).
+- Sin mocks: todas las llamadas al backend real via fetchJson.
+- UX: loading/empty, toasts de éxito/error, ConfirmDialog para eliminar.
+- Responsive (mobile/desktop) y accesibilidad básica (labels, aria, focus).
+- Build/run: incluye npm i && npm run dev y .env.example con VITE_API_URL=http://localhost:8080.
+
+FORMATO DE RESPUESTA
+- SOLO bloques de código con el contenido de cada archivo pedido (ts/tsx). No agregues texto fuera de los bloques.
+- Si el contrato no tiene un endpoint/campo exigido, HAZ UNA PREGUNTA y detente.

@@ -12,11 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data @NoArgsConstructor @AllArgsConstructor
 @Entity @Table(name = "producto", schema = "tienda_yuliana")
 public class Producto {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,4 +42,79 @@ public class Producto {
 
     @Column(nullable = false)
     private Boolean activo = true;
+
+    public Producto() {}
+
+    // Getters and Setters
+    public Integer getIdProducto() {
+        return idProducto;
+    }
+
+    public void setIdProducto(Integer idProducto) {
+        this.idProducto = idProducto;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getCodigoBarras() {
+        return codigoBarras;
+    }
+
+    public void setCodigoBarras(String codigoBarras) {
+        this.codigoBarras = codigoBarras;
+    }
+
+    public BigDecimal getPrecioVenta() {
+        return precioVenta;
+    }
+
+    public void setPrecioVenta(BigDecimal precioVenta) {
+        this.precioVenta = precioVenta;
+    }
+
+    public BigDecimal getCostoActual() {
+        return costoActual;
+    }
+
+    public void setCostoActual(BigDecimal costoActual) {
+        this.costoActual = costoActual;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
+    public Integer getStockMinimo() {
+        return stockMinimo;
+    }
+
+    public void setStockMinimo(Integer stockMinimo) {
+        this.stockMinimo = stockMinimo;
+    }
+
+    public Proveedor getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
 }
