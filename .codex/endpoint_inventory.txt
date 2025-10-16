@@ -1,0 +1,392 @@
+﻿
+  src\main\java\com\tiendayuliana\backend\controller\AccionesCaducidadController.java:13:import 
+jakarta.validation.Valid;
+  src\main\java\com\tiendayuliana\backend\controller\AccionesCaducidadController.java:14:
+> src\main\java\com\tiendayuliana\backend\controller\AccionesCaducidadController.java:15:@RestController
+> 
+src\main\java\com\tiendayuliana\backend\controller\AccionesCaducidadController.java:16:@RequestMapping("/api/acciones")
+  src\main\java\com\tiendayuliana\backend\controller\AccionesCaducidadController.java:17:@Validated
+  src\main\java\com\tiendayuliana\backend\controller\AccionesCaducidadController.java:18:public class 
+AccionesCaducidadController {
+  src\main\java\com\tiendayuliana\backend\controller\AccionesCaducidadController.java:20:    public 
+AccionesCaducidadController(CaducidadService caducidadService){ this.caducidadService = caducidadService; }
+  src\main\java\com\tiendayuliana\backend\controller\AccionesCaducidadController.java:21:
+> src\main\java\com\tiendayuliana\backend\controller\AccionesCaducidadController.java:22:    @PostMapping("/caducidad")
+  src\main\java\com\tiendayuliana\backend\controller\AccionesCaducidadController.java:23:    public 
+ResponseEntity<java.util.Map<String, Object>> aplicar(@Valid @RequestBody CaducidadAccionDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\AccionesCaducidadController.java:24:        // TODO: retornar DTO 
+resultado cuando se implemente
+  src\main\java\com\tiendayuliana\backend\controller\AnalyticsController.java:14:import 
+com.tiendayuliana.backend.repository.VentaRepository;
+  src\main\java\com\tiendayuliana\backend\controller\AnalyticsController.java:15:
+> src\main\java\com\tiendayuliana\backend\controller\AnalyticsController.java:16:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\AnalyticsController.java:17:@RequestMapping("/api/analytics")
+  src\main\java\com\tiendayuliana\backend\controller\AnalyticsController.java:18:public class AnalyticsController {
+  src\main\java\com\tiendayuliana\backend\controller\AnalyticsController.java:19:    private final VentaRepository 
+ventaRepository;
+  src\main\java\com\tiendayuliana\backend\controller\AnalyticsController.java:24:    }
+  src\main\java\com\tiendayuliana\backend\controller\AnalyticsController.java:25:
+> src\main\java\com\tiendayuliana\backend\controller\AnalyticsController.java:26:    @GetMapping("/dashboard")
+  src\main\java\com\tiendayuliana\backend\controller\AnalyticsController.java:27:    public Map<String, Object> 
+dashboard(@RequestParam LocalDate desde, @RequestParam LocalDate hasta) {
+  src\main\java\com\tiendayuliana\backend\controller\AnalyticsController.java:28:        var ini = 
+desde.atStartOfDay();
+  src\main\java\com\tiendayuliana\backend\controller\AuthController.java:11:import 
+com.tiendayuliana.backend.service.AuthService;
+  src\main\java\com\tiendayuliana\backend\controller\AuthController.java:12:
+> src\main\java\com\tiendayuliana\backend\controller\AuthController.java:13:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\AuthController.java:14:@RequestMapping("/api/auth")
+  src\main\java\com\tiendayuliana\backend\controller\AuthController.java:15:@Validated
+  src\main\java\com\tiendayuliana\backend\controller\AuthController.java:16:public class AuthController {
+  src\main\java\com\tiendayuliana\backend\controller\AuthController.java:22:    }
+  src\main\java\com\tiendayuliana\backend\controller\AuthController.java:23:
+> src\main\java\com\tiendayuliana\backend\controller\AuthController.java:24:    @PostMapping("/login")
+  src\main\java\com\tiendayuliana\backend\controller\AuthController.java:25:    public LoginResponse 
+login(@RequestBody @jakarta.validation.Valid LoginRequest req) {
+  src\main\java\com\tiendayuliana\backend\controller\AuthController.java:26:        return authService.login(req);
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:16:import jakarta.validation.Valid;
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:17:
+> src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:18:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:19:@RequestMapping("/api/clientes")
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:20:@Validated
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:21:public class ClienteController {
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:23:    public 
+ClienteController(ClienteService service) { this.service = service; }
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:24:
+> src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:25:    @GetMapping
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:26:    @PreAuthorize("@roles.has('ADMIN') 
+or @roles.has('EMPLEADO') or @roles.has('SUPERVISOR')")
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:27:    public List<ClienteResponseDTO> 
+listar() { return service.listar(); }
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:28:
+> src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:29:    @GetMapping("/{id}")
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:30:    @PreAuthorize("@roles.has('ADMIN') 
+or @roles.has('EMPLEADO') or @roles.has('SUPERVISOR')")
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:31:    public ClienteResponseDTO 
+get(@PathVariable Integer id) { return service.getById(id); }
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:32:
+> src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:33:    @PostMapping
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:34:    @PreAuthorize("@roles.has('ADMIN')")
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:35:    public 
+ResponseEntity<ClienteResponseDTO> crear(@Valid @RequestBody ClienteCreateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:38:    }
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:39:
+> src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:40:    @PutMapping("/{id}")
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:41:    @PreAuthorize("@roles.has('ADMIN')")
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:42:    public ClienteResponseDTO 
+actualizar(@PathVariable Integer id, @Valid @RequestBody ClienteUpdateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:44:    }
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:45:
+> src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:46:    @DeleteMapping("/{id}")
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:47:    @PreAuthorize("@roles.has('ADMIN')")
+  src\main\java\com\tiendayuliana\backend\controller\ClienteController.java:48:    public ResponseEntity<Void> 
+eliminar(@PathVariable Integer id) {
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:12:import lombok.RequiredArgsConstructor;
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:13:
+> src\main\java\com\tiendayuliana\backend\controller\CompraController.java:14:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\CompraController.java:15:@RequestMapping("/api/compras")
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:16:@Validated
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:17:public class CompraController {
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:23:    }
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:24:
+> src\main\java\com\tiendayuliana\backend\controller\CompraController.java:25:    @PostMapping
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:26:    public ResponseEntity<Object> 
+crear(@RequestBody @jakarta.validation.Valid CompraCreateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:27:        Integer id = 
+compraService.crearCompra(dto);
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:29:    }
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:30:
+> src\main\java\com\tiendayuliana\backend\controller\CompraController.java:31:    @PostMapping("/{id}/pagos")
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:32:    public java.util.Map<String, String> 
+pagar(@PathVariable Integer id, @RequestBody @jakarta.validation.Valid PagoCompraDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\CompraController.java:33:        compraService.pagar(id, dto);
+  src\main\java\com\tiendayuliana\backend\controller\CuentaCorrienteController.java:14:import jakarta.validation.Valid;
+  src\main\java\com\tiendayuliana\backend\controller\CuentaCorrienteController.java:15:
+> src\main\java\com\tiendayuliana\backend\controller\CuentaCorrienteController.java:16:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\CuentaCorrienteController.java:17:@RequestMapping("/api/cuentas")
+  src\main\java\com\tiendayuliana\backend\controller\CuentaCorrienteController.java:18:@Validated
+  src\main\java\com\tiendayuliana\backend\controller\CuentaCorrienteController.java:19:public class 
+CuentaCorrienteController {
+  src\main\java\com\tiendayuliana\backend\controller\CuentaCorrienteController.java:25:    }
+  src\main\java\com\tiendayuliana\backend\controller\CuentaCorrienteController.java:26:
+> src\main\java\com\tiendayuliana\backend\controller\CuentaCorrienteController.java:27:    @PostMapping("/{id}/abonos")
+  src\main\java\com\tiendayuliana\backend\controller\CuentaCorrienteController.java:28:    public 
+ResponseEntity<java.util.Map<String, Object>> abonar(@PathVariable Integer id,
+  src\main\java\com\tiendayuliana\backend\controller\CuentaCorrienteController.java:29:                                
+                                @Valid @RequestBody AbonoCreateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\DevolucionProveedorController.java:15:import 
+jakarta.validation.Valid;
+  src\main\java\com\tiendayuliana\backend\controller\DevolucionProveedorController.java:16:
+> src\main\java\com\tiendayuliana\backend\controller\DevolucionProveedorController.java:17:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\DevolucionProveedorController.java:18:@RequestMapping("/api/devolu
+ciones")
+  src\main\java\com\tiendayuliana\backend\controller\DevolucionProveedorController.java:19:@Validated
+  src\main\java\com\tiendayuliana\backend\controller\DevolucionProveedorController.java:20:public class 
+DevolucionProveedorController {
+  src\main\java\com\tiendayuliana\backend\controller\DevolucionProveedorController.java:22:    public 
+DevolucionProveedorController(DevolucionProveedorService service) { this.service = service; }
+  src\main\java\com\tiendayuliana\backend\controller\DevolucionProveedorController.java:23:
+> src\main\java\com\tiendayuliana\backend\controller\DevolucionProveedorController.java:24:    @PostMapping
+  src\main\java\com\tiendayuliana\backend\controller\DevolucionProveedorController.java:25:    public 
+ResponseEntity<java.util.Map<String, Object>> registrar(@Valid @RequestBody DevolucionCreateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\DevolucionProveedorController.java:26:        Integer id = 
+service.registrar(dto);
+  src\main\java\com\tiendayuliana\backend\controller\HealthController.java:6:import 
+org.springframework.web.bind.annotation.RestController;
+  src\main\java\com\tiendayuliana\backend\controller\HealthController.java:7:
+> src\main\java\com\tiendayuliana\backend\controller\HealthController.java:8:@RestController
+  src\main\java\com\tiendayuliana\backend\controller\HealthController.java:9:public class HealthController {
+> src\main\java\com\tiendayuliana\backend\controller\HealthController.java:10:    @GetMapping("/api/health")
+  src\main\java\com\tiendayuliana\backend\controller\HealthController.java:11:    public Map<String, Object> health() {
+  src\main\java\com\tiendayuliana\backend\controller\HealthController.java:12:        return 
+Map.of("status","ok","service","tienda-yuliana");
+  src\main\java\com\tiendayuliana\backend\controller\LoteController.java:11:import 
+com.tiendayuliana.backend.service.LoteService;
+  src\main\java\com\tiendayuliana\backend\controller\LoteController.java:12:
+> src\main\java\com\tiendayuliana\backend\controller\LoteController.java:13:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\LoteController.java:14:@RequestMapping("/api/lotes")
+  src\main\java\com\tiendayuliana\backend\controller\LoteController.java:15:public class LoteController {
+  src\main\java\com\tiendayuliana\backend\controller\LoteController.java:16:    private final LoteService loteService;
+  src\main\java\com\tiendayuliana\backend\controller\LoteController.java:17:    public LoteController(LoteService 
+loteService) { this.loteService = loteService; }
+  src\main\java\com\tiendayuliana\backend\controller\LoteController.java:18:
+> src\main\java\com\tiendayuliana\backend\controller\LoteController.java:19:    @GetMapping("/por-vencer")
+  src\main\java\com\tiendayuliana\backend\controller\LoteController.java:20:    public List<LotePorVencerDTO> 
+porVencer(@RequestParam(defaultValue = "30") int dias) {
+  src\main\java\com\tiendayuliana\backend\controller\LoteController.java:21:        return loteService.porVencer(dias);
+  src\main\java\com\tiendayuliana\backend\controller\MermaController.java:13:import jakarta.validation.Valid;
+  src\main\java\com\tiendayuliana\backend\controller\MermaController.java:14:
+> src\main\java\com\tiendayuliana\backend\controller\MermaController.java:15:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\MermaController.java:16:@RequestMapping("/api/mermas")
+  src\main\java\com\tiendayuliana\backend\controller\MermaController.java:17:@Validated
+  src\main\java\com\tiendayuliana\backend\controller\MermaController.java:18:public class MermaController {
+  src\main\java\com\tiendayuliana\backend\controller\MermaController.java:20:    public MermaController(MermaService 
+service) { this.service = service; }
+  src\main\java\com\tiendayuliana\backend\controller\MermaController.java:21:
+> src\main\java\com\tiendayuliana\backend\controller\MermaController.java:22:    @PostMapping
+  src\main\java\com\tiendayuliana\backend\controller\MermaController.java:23:    public 
+ResponseEntity<java.util.Map<String, Object>> registrar(@Valid @RequestBody MermaCreateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\MermaController.java:24:        service.registrar(dto);
+  src\main\java\com\tiendayuliana\backend\controller\NotificacionesController.java:8:import 
+com.tiendayuliana.backend.service.StockNotificationService;
+  src\main\java\com\tiendayuliana\backend\controller\NotificacionesController.java:9:
+> src\main\java\com\tiendayuliana\backend\controller\NotificacionesController.java:10:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\NotificacionesController.java:11:@RequestMapping("/api/notificacio
+nes/stock-bajo")
+  src\main\java\com\tiendayuliana\backend\controller\NotificacionesController.java:12:public class 
+NotificacionesController {
+  src\main\java\com\tiendayuliana\backend\controller\NotificacionesController.java:13:    private final 
+StockNotificationService stockNotificationService;
+  src\main\java\com\tiendayuliana\backend\controller\NotificacionesController.java:14:    public 
+NotificacionesController(StockNotificationService stockNotificationService) { this.stockNotificationService = 
+stockNotificationService; }
+  src\main\java\com\tiendayuliana\backend\controller\NotificacionesController.java:15:
+> src\main\java\com\tiendayuliana\backend\controller\NotificacionesController.java:16:    @PostMapping("/send")
+  src\main\java\com\tiendayuliana\backend\controller\NotificacionesController.java:17:    
+@PreAuthorize("@roles.has('ADMIN')")
+  src\main\java\com\tiendayuliana\backend\controller\NotificacionesController.java:18:    public java.util.Map<String, 
+String> send() {
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:21:import jakarta.validation.Valid;
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:22:
+> src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:23:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:24:@RequestMapping("/api/productos")
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:25:public class ProductoController {
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:26:
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:31:    }
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:32:
+> src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:33:    @PostMapping
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:34:    public 
+ResponseEntity<ProductResponseDTO> crear(@Valid @RequestBody ProductCreateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:35:        ProductResponseDTO created = 
+productoService.crear(dto);
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:39:    }
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:40:
+> src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:41:    @GetMapping("/{id}")
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:42:    public 
+ResponseEntity<ProductResponseDTO> getById(@PathVariable Integer id) {
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:43:        return 
+ResponseEntity.ok(productoService.getById(id));
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:44:    }
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:45:
+> src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:46:    @GetMapping
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:47:    public 
+ResponseEntity<List<ProductResponseDTO>> listar() {
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:48:        return 
+ResponseEntity.ok(productoService.listar());
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:49:    }
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:50:
+> src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:51:    @GetMapping("/stock-bajo")
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:52:    public List<ProductResponseDTO> 
+stockBajo() {
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:53:        return 
+productoService.stockBajo();
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:54:    }
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:55:
+> src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:56:    @PutMapping("/{id}")
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:57:    public 
+ResponseEntity<ProductResponseDTO> actualizar(@PathVariable Integer id,
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:58:                                       
+                  @Valid @RequestBody ProductUpdateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:60:    }
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:61:
+> src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:62:    @DeleteMapping("/{id}")
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:63:    public ResponseEntity<Void> 
+eliminar(@PathVariable Integer id) {
+  src\main\java\com\tiendayuliana\backend\controller\ProductoController.java:64:        productoService.eliminar(id);
+  src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:13:import jakarta.validation.Valid;
+  src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:14:
+> src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:15:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:16:@RequestMapping("/api/promociones")
+  src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:17:@Validated
+  src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:18:public class PromocionController {
+  src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:20:    public 
+PromocionController(PromocionService service) { this.service = service; }
+  src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:21:
+> src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:22:    @GetMapping
+  src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:23:    
+@PreAuthorize("@roles.has('ADMIN') or @roles.has('SUPERVISOR')")
+  src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:24:    public List<PromocionResponseDTO> 
+listar() { return service.listar(); }
+  src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:25:
+> src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:26:    @PostMapping
+  src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:27:    
+@PreAuthorize("@roles.has('ADMIN')")
+  src\main\java\com\tiendayuliana\backend\controller\PromocionController.java:28:    public PromocionResponseDTO 
+crear(@Valid @RequestBody PromocionCreateDTO dto) { return service.crear(dto); }
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:16:import jakarta.validation.Valid;
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:17:
+> src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:18:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:19:@RequestMapping("/api/proveedores")
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:20:@Validated
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:21:public class ProveedorController {
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:23:    public 
+ProveedorController(ProveedorService service) { this.service = service; }
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:24:
+> src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:25:    @GetMapping
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:26:    
+@PreAuthorize("@roles.has('ADMIN') or @roles.has('EMPLEADO') or @roles.has('SUPERVISOR')")
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:27:    public List<ProveedorResponseDTO> 
+listar() { return service.listar(); }
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:28:
+> src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:29:    @GetMapping("/{id}")
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:30:    
+@PreAuthorize("@roles.has('ADMIN') or @roles.has('EMPLEADO') or @roles.has('SUPERVISOR')")
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:31:    public ProveedorResponseDTO 
+get(@PathVariable Integer id) { return service.getById(id); }
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:32:
+> src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:33:    @PostMapping
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:34:    
+@PreAuthorize("@roles.has('ADMIN')")
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:35:    public 
+ResponseEntity<ProveedorResponseDTO> crear(@Valid @RequestBody ProveedorCreateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:38:    }
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:39:
+> src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:40:    @PutMapping("/{id}")
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:41:    
+@PreAuthorize("@roles.has('ADMIN')")
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:42:    public ProveedorResponseDTO 
+actualizar(@PathVariable Integer id, @Valid @RequestBody ProveedorUpdateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:44:    }
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:45:
+> src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:46:    @DeleteMapping("/{id}")
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:47:    
+@PreAuthorize("@roles.has('ADMIN')")
+  src\main\java\com\tiendayuliana\backend\controller\ProveedorController.java:48:    public ResponseEntity<Void> 
+eliminar(@PathVariable Integer id) {
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:18:
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:19:
+> src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:20:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:21:@RequestMapping("/api/reportes")
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:22:public class ReportesController {
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:23:
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:35:    }
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:36:
+> src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:37:    @GetMapping("/ventas")
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:38:    public ReporteVentasDTO 
+ventas(@RequestParam String periodo) {
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:39:        return 
+reporteService.ventasPorPeriodo(periodo);
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:40:    }
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:41:
+> src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:42:    @GetMapping("/compras")
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:43:    public List<ReporteComprasDTO> 
+compras(@RequestParam LocalDate desde,
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:44:                                       
+    @RequestParam LocalDate hasta,
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:50:    }
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:51:
+> src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:52:    @GetMapping("/utilidades")
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:53:    public java.util.Map<String, 
+Object> utilidades(@RequestParam LocalDate desde,
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:54:                                       
+             @RequestParam LocalDate hasta) {
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:67:    }
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:68:
+> src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:69:    @GetMapping("/top-productos")
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:70:    public 
+java.util.List<java.util.Map<String, Object>> topProductos(@RequestParam LocalDate desde,
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:71:                                       
+                               @RequestParam LocalDate hasta,
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:84:    }
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:85:
+> src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:86:    @GetMapping(value = "/ventas.pdf")
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:87:    public 
+org.springframework.http.ResponseEntity<byte[]> ventasPdf(@RequestParam String periodo) throws Exception {
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:88:        var rep = ventas(periodo);
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:100:    }
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:101:
+> src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:102:    @GetMapping(value = 
+"/ventas.xlsx")
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:103:    public 
+org.springframework.http.ResponseEntity<byte[]> ventasXlsx(@RequestParam String periodo) throws Exception {
+  src\main\java\com\tiendayuliana\backend\controller\ReportesController.java:104:        var rep = ventas(periodo);
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:20:import jakarta.validation.Valid;
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:21:
+> src\main\java\com\tiendayuliana\backend\controller\VentaController.java:22:@RestController
+> src\main\java\com\tiendayuliana\backend\controller\VentaController.java:23:@RequestMapping("/api/ventas")
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:24:public class VentaController {
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:25:
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:30:    }
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:31:
+> src\main\java\com\tiendayuliana\backend\controller\VentaController.java:32:    @PostMapping
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:33:    public 
+ResponseEntity<VentaResponseDTO> crear(@Valid @RequestBody VentaCreateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:34:        VentaResponseDTO created = 
+ventaService.crear(dto);
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:37:    }
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:38:
+> src\main\java\com\tiendayuliana\backend\controller\VentaController.java:39:    @GetMapping("/{id}")
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:40:    public 
+ResponseEntity<VentaResponseDTO> getById(@PathVariable Integer id) {
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:41:        return 
+ResponseEntity.ok(ventaService.getById(id));
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:42:    }
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:43:
+> src\main\java\com\tiendayuliana\backend\controller\VentaController.java:44:    @GetMapping
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:45:    public 
+ResponseEntity<List<VentaListItemDTO>> listar() {
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:46:        return 
+ResponseEntity.ok(ventaService.listar());
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:47:    }
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:48:
+> src\main\java\com\tiendayuliana\backend\controller\VentaController.java:49:    @PostMapping("/{id}/pagos")
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:50:    public 
+ResponseEntity<VentaResponseDTO> registrarPago(@PathVariable Integer id,
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:51:                                          
+                @Valid @RequestBody PagoCreateDTO dto) {
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:53:    }
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:54:
+> src\main\java\com\tiendayuliana\backend\controller\VentaController.java:55:    @GetMapping("/{id}/comprobante.pdf")
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:56:    public 
+org.springframework.http.ResponseEntity<byte[]> comprobante(@PathVariable Integer id) throws Exception {
+  src\main\java\com\tiendayuliana\backend\controller\VentaController.java:57:        // Generación simple de PDF con 
+OpenPDF
+  src\main\java\com\tiendayuliana\backend\exception\GlobalExceptionHandler.java:12:import 
+org.springframework.web.bind.annotation.RestControllerAdvice;
+  src\main\java\com\tiendayuliana\backend\exception\GlobalExceptionHandler.java:13:
+> src\main\java\com\tiendayuliana\backend\exception\GlobalExceptionHandler.java:14:@RestControllerAdvice
+  src\main\java\com\tiendayuliana\backend\exception\GlobalExceptionHandler.java:15:public class GlobalExceptionHandler 
+{
+  src\main\java\com\tiendayuliana\backend\exception\GlobalExceptionHandler.java:16:
+
+

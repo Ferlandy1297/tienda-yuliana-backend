@@ -58,7 +58,23 @@ public class CaducidadServiceImpl implements CaducidadService {
         switch (accion) {
             case "DONACION" -> procesarDonacion(dto);
             case "DEVOLUCION" -> procesarDevolucion(dto);
-            case "DESCUENTO" -> procesarDescuento(dto);
+            case "DESCUENTO" -> procesarDescuentoPersistente(dto);
+        }
+    }
+
+    private void procesarDescuentoPersistente(CaducidadAccionDTO dto) {
+        java.math.BigDecimal porc = dto.porcentajeDescuento();
+        if (porc != null) {
+            if (porc.compareTo(java.math.BigDecimal.ZERO) <= 0 || porc.compareTo(java.math.BigDecimal.ONE) > 0) {
+                throw new BadRequestException("porcentajeDescuento debe estar en (0,1]");
+            }
+        }
+        for (CaducidadAccionDTO.Item it : dto.items()) {
+            Lote lote = loteRepo.findById(it.idLote())
+                    .orElseThrow(() -> new NotFoundException("Lote no encontrado: " + it.idLote()));
+            lote.setEnDescuento(Boolean.TRUE);
+            lote.setPorcentajeDescuento(porc);
+            loteRepo.save(lote);
         }
     }
 

@@ -46,6 +46,10 @@ public class Merma {
     @Column(name = "costo_estimado", nullable = false)
     private BigDecimal costoEstimado = BigDecimal.ZERO;
 
+    public void setCostoEstimado(BigDecimal costoEstimado) {
+        this.costoEstimado = costoEstimado;
+    }
+
     @Column(length = 200)
     private String observacion;
 }
