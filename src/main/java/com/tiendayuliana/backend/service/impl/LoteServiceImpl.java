@@ -1,5 +1,6 @@
 package com.tiendayuliana.backend.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class LoteServiceImpl implements LoteService {
                         l.getProducto().getNombre(),
                         l.getFechaVencimiento(),
                         l.getCantidadDisponible(),
-                        l.getEnDescuento(),
+                        Boolean.TRUE.equals(l.getEnDescuento()),
                         l.getPorcentajeDescuento()
                 ))
                 .toList();
