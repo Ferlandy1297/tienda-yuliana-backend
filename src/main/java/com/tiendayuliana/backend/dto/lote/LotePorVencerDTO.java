@@ -1,5 +1,6 @@
 package com.tiendayuliana.backend.dto.lote;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record LotePorVencerDTO(
@@ -7,6 +8,8 @@ public record LotePorVencerDTO(
         Integer idProducto,
         String nombreProducto,
         LocalDate fechaVencimiento,
-        Integer cantidadDisponible
+        Integer cantidadDisponible,
+        Boolean enDescuento,
+        BigDecimal porcentajeDescuento
 ) {}
 

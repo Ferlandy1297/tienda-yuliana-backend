@@ -31,7 +31,9 @@ public class LoteServiceImpl implements LoteService {
                         l.getProducto().getIdProducto(),
                         l.getProducto().getNombre(),
                         l.getFechaVencimiento(),
-                        l.getCantidadDisponible()
+                        l.getCantidadDisponible(),
+                        l.getEnDescuento(),
+                        l.getPorcentajeDescuento()
                 ))
                 .toList();
     }
