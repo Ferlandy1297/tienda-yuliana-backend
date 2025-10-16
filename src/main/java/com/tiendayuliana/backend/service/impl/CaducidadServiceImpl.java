@@ -47,11 +47,11 @@ public class CaducidadServiceImpl implements CaducidadService {
     @Override
     @Transactional
     public void aplicar(CaducidadAccionDTO dto) {
-        String accion = dto.accion() == null ? "" : dto.accion().trim().toUpperCase();
+        String accion = dto.getAccion() == null ? "" : dto.getAccion().trim().toUpperCase();
         if (!(accion.equals("DONACION") || accion.equals("DEVOLUCION") || accion.equals("DESCUENTO"))) {
             throw new BadRequestException("Acción de caducidad inválida");
         }
-        if (dto.items() == null || dto.items().isEmpty()) {
+        if (dto.getItems() == null || dto.getItems().isEmpty()) {
             throw new BadRequestException("Debe enviar items de lotes");
         }
 
@@ -63,44 +63,45 @@ public class CaducidadServiceImpl implements CaducidadService {
     }
 
     private void procesarDescuentoPersistente(CaducidadAccionDTO dto) {
-        java.math.BigDecimal porc = dto.porcentajeDescuento();
-        if (porc != null) {
-            if (porc.compareTo(java.math.BigDecimal.ZERO) <= 0 || porc.compareTo(java.math.BigDecimal.ONE) > 0) {
-                throw new BadRequestException("porcentajeDescuento debe estar en (0,1]");
-            }
+        BigDecimal porcentaje = dto.getPorcentajeDescuento();
+        if (porcentaje == null) {
+            porcentaje = new BigDecimal("10.00"); // default 10%
         }
-        for (CaducidadAccionDTO.Item it : dto.items()) {
-            Lote lote = loteRepo.findById(it.idLote())
-                    .orElseThrow(() -> new NotFoundException("Lote no encontrado: " + it.idLote()));
+        if (porcentaje.compareTo(BigDecimal.ZERO) < 0 || porcentaje.compareTo(new BigDecimal("100")) > 0) {
+            throw new BadRequestException("porcentajeDescuento debe estar entre 0 y 100");
+        }
+        for (CaducidadAccionDTO.Item it : dto.getItems()) {
+            Lote lote = loteRepo.findById(it.getIdLote())
+                    .orElseThrow(() -> new NotFoundException("Lote no encontrado: " + it.getIdLote()));
             lote.setEnDescuento(Boolean.TRUE);
-            lote.setPorcentajeDescuento(porc);
+            lote.setPorcentajeDescuento(porcentaje);
             loteRepo.save(lote);
         }
     }
 
     private void procesarDonacion(CaducidadAccionDTO dto) {
-        for (CaducidadAccionDTO.Item it : dto.items()) {
-            Lote lote = loteRepo.findById(it.idLote())
-                    .orElseThrow(() -> new NotFoundException("Lote no encontrado: " + it.idLote()));
-            if (it.cantidad() == null || it.cantidad() <= 0) {
+        for (CaducidadAccionDTO.Item it : dto.getItems()) {
+            Lote lote = loteRepo.findById(it.getIdLote())
+                    .orElseThrow(() -> new NotFoundException("Lote no encontrado: " + it.getIdLote()));
+            if (it.getCantidad() == null || it.getCantidad() <= 0) {
                 throw new BadRequestException("Cantidad inválida");
             }
-            if (lote.getCantidadDisponible() < it.cantidad()) {
+            if (lote.getCantidadDisponible() < it.getCantidad()) {
                 throw new BadRequestException("Cantidad mayor a disponible en lote");
             }
             Producto prod = lote.getProducto();
-            lote.setCantidadDisponible(lote.getCantidadDisponible() - it.cantidad());
+            lote.setCantidadDisponible(lote.getCantidadDisponible() - it.getCantidad());
             loteRepo.save(lote);
-            prod.setStock(prod.getStock() - it.cantidad());
+            prod.setStock(prod.getStock() - it.getCantidad());
             productoRepo.save(prod);
 
             Merma m = new Merma();
             m.setProducto(prod);
             m.setLote(lote);
-            m.setCantidad(it.cantidad());
+            m.setCantidad(it.getCantidad());
             m.setMotivo("DONACION_CADUCIDAD");
             BigDecimal costo = prod.getCostoActual() == null ? BigDecimal.ZERO : prod.getCostoActual();
-            m.setCostoEstimado(costo.multiply(BigDecimal.valueOf(it.cantidad())));
+            m.setCostoEstimado(costo.multiply(BigDecimal.valueOf(it.getCantidad())));
             m.setObservacion("Donación por caducidad");
             mermaRepo.save(m);
         }
@@ -109,9 +110,9 @@ public class CaducidadServiceImpl implements CaducidadService {
     private void procesarDevolucion(CaducidadAccionDTO dto) {
         // Agrupar por proveedor del producto del lote
         Map<Proveedor, List<CaducidadAccionDTO.Item>> porProveedor = new HashMap<>();
-        for (CaducidadAccionDTO.Item it : dto.items()) {
-            Lote lote = loteRepo.findById(it.idLote())
-                    .orElseThrow(() -> new NotFoundException("Lote no encontrado: " + it.idLote()));
+        for (CaducidadAccionDTO.Item it : dto.getItems()) {
+            Lote lote = loteRepo.findById(it.getIdLote())
+                    .orElseThrow(() -> new NotFoundException("Lote no encontrado: " + it.getIdLote()));
             Proveedor prov = lote.getProducto().getProveedor();
             if (prov == null) {
                 throw new BadRequestException("Producto sin proveedor asociado para devolución");
@@ -129,18 +130,18 @@ public class CaducidadServiceImpl implements CaducidadService {
 
             BigDecimal total = BigDecimal.ZERO;
             for (CaducidadAccionDTO.Item it : entry.getValue()) {
-                Lote lote = loteRepo.findById(it.idLote())
-                        .orElseThrow(() -> new NotFoundException("Lote no encontrado: " + it.idLote()));
-                if (it.cantidad() == null || it.cantidad() <= 0) {
+                Lote lote = loteRepo.findById(it.getIdLote())
+                        .orElseThrow(() -> new NotFoundException("Lote no encontrado: " + it.getIdLote()));
+                if (it.getCantidad() == null || it.getCantidad() <= 0) {
                     throw new BadRequestException("Cantidad inválida");
                 }
-                if (lote.getCantidadDisponible() < it.cantidad()) {
+                if (lote.getCantidadDisponible() < it.getCantidad()) {
                     throw new BadRequestException("Cantidad mayor a disponible en lote");
                 }
                 Producto prod = lote.getProducto();
-                lote.setCantidadDisponible(lote.getCantidadDisponible() - it.cantidad());
+                lote.setCantidadDisponible(lote.getCantidadDisponible() - it.getCantidad());
                 loteRepo.save(lote);
-                prod.setStock(prod.getStock() - it.cantidad());
+                prod.setStock(prod.getStock() - it.getCantidad());
                 productoRepo.save(prod);
 
                 DevolucionDetalleId detId = new DevolucionDetalleId();
@@ -153,10 +154,10 @@ public class CaducidadServiceImpl implements CaducidadService {
                 det.setDevolucion(dev);
                 det.setProducto(prod);
                 det.setLote(lote);
-                det.setCantidad(it.cantidad());
+                det.setCantidad(it.getCantidad());
 
                 BigDecimal costo = prod.getCostoActual() == null ? BigDecimal.ZERO : prod.getCostoActual();
-                BigDecimal costoEst = costo.multiply(BigDecimal.valueOf(it.cantidad()));
+                BigDecimal costoEst = costo.multiply(BigDecimal.valueOf(it.getCantidad()));
                 det.setCostoEstimado(costoEst);
                 detRepo.save(det);
                 total = total.add(costoEst);
@@ -169,11 +170,11 @@ public class CaducidadServiceImpl implements CaducidadService {
     private void procesarDescuento(CaducidadAccionDTO dto) {
         // Sin campo específico en Lote para marcar descuento. Se deja como NO-OP con registro mínimo en observación de merma.
         // Si se requiere persistir bandera, añadir columna 'enDescuento' en Lote (no implementado por evitar cambios de esquema).
-        for (CaducidadAccionDTO.Item it : dto.items()) {
+        for (CaducidadAccionDTO.Item it : dto.getItems()) {
             // validamos existencia del lote y cantidad pero no descontamos stock
-            Lote lote = loteRepo.findById(it.idLote())
-                    .orElseThrow(() -> new NotFoundException("Lote no encontrado: " + it.idLote()));
-            if (it.cantidad() == null || it.cantidad() <= 0) {
+            Lote lote = loteRepo.findById(it.getIdLote())
+                    .orElseThrow(() -> new NotFoundException("Lote no encontrado: " + it.getIdLote()));
+            if (it.getCantidad() == null || it.getCantidad() <= 0) {
                 throw new BadRequestException("Cantidad inválida");
             }
             // Marca lógica podría integrarse aquí en el futuro.

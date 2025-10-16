@@ -34,13 +34,17 @@ class CaducidadServiceImplTest {
         when(loteRepository.findById(1)).thenReturn(Optional.of(lote));
         when(loteRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        var item = new CaducidadAccionDTO.Item(1, 1);
-        var dto = new CaducidadAccionDTO("DESCUENTO", List.of(item), new BigDecimal("0.2"));
+        CaducidadAccionDTO.Item item = new CaducidadAccionDTO.Item();
+        item.setIdLote(1);
+        item.setCantidad(1);
+        CaducidadAccionDTO dto = new CaducidadAccionDTO();
+        dto.setAccion("DESCUENTO");
+        dto.setItems(java.util.List.of(item));
+        dto.setPorcentajeDescuento(new BigDecimal("20.00"));
 
         service.aplicar(dto);
         assertEquals(Boolean.TRUE, lote.getEnDescuento());
-        assertEquals(0, new BigDecimal("0.2").compareTo(lote.getPorcentajeDescuento()));
+        assertEquals(0, new BigDecimal("20.00").compareTo(lote.getPorcentajeDescuento()));
         verify(loteRepository, atLeastOnce()).save(lote);
     }
 }
-
