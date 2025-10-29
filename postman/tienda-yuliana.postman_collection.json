@@ -1,0 +1,196 @@
+{
+  "info": {
+    "name": "Tienda Yuliana API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección de endpoints para pruebas de backend"
+  },
+  "item": [
+    {
+      "name": "Auth Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/auth/check", "host": ["{{baseUrl}}"], "path": ["api", "auth", "check"] },
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }
+      }
+    },
+    {
+      "name": "Proveedor - Crear",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\n  \"nombre\": \"Proveedor X\",\n  \"contacto\": \"Juan\",\n  \"telefono\": \"555-111\",\n  \"direccion\": \"Calle 1\",\n  \"activo\": true\n}"},
+        "url": { "raw": "{{baseUrl}}/api/proveedores", "host": ["{{baseUrl}}"], "path": ["api","proveedores"] },
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }
+      }
+    },
+    {
+      "name": "Proveedor - Listar",
+      "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/proveedores","host":["{{baseUrl}}"],"path":["api","proveedores"]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Cliente - Crear",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\n  \"nombre\": \"Cliente 1\",\n  \"telefono\": \"555-222\",\n  \"esMayorista\": true,\n  \"limiteCredito\": 500.00,\n  \"estadoCredito\": \"ACTIVO\",\n  \"activo\": true\n}"},
+        "url": { "raw": "{{baseUrl}}/api/clientes", "host": ["{{baseUrl}}"], "path": ["api","clientes"] },
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }
+      }
+    },
+    {
+      "name": "Producto - Crear",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\n  \"nombre\": \"Galletas\",\n  \"codigoBarras\": \"7501234567890\",\n  \"precioVenta\": 20.50,\n  \"costoActual\": 12.00,\n  \"stock\": 100,\n  \"stockMinimo\": 10,\n  \"idProveedor\": 1\n}"},
+        "url": { "raw": "{{baseUrl}}/api/productos", "host": ["{{baseUrl}}"], "path": ["api","productos"] },
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }
+      }
+    },
+    {
+      "name": "Compra - Registrar",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\n  \"idProveedor\": 1,\n  \"condicion\": \"CONTADO\",\n  \"estado\": \"ABIERTA\",\n  \"observacion\": \"Compra inicial\",\n  \"items\": [\n    { \"idProducto\": 1, \"cantidad\": 50, \"costoUnitario\": 10.5, \"fechaVencimiento\": \"2026-12-31\" }\n  ]\n}"},
+        "url": { "raw": "{{baseUrl}}/api/compras", "host": ["{{baseUrl}}"], "path": ["api","compras"] },
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }
+      }
+    },
+    {
+      "name": "Venta - Detalle",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\n  \"tipo\": \"DETALLE\",\n  \"items\": [ { \"codigoBarras\": \"7501234567890\", \"cantidad\": 2 } ],\n  \"pago\": { \"montoEntregado\": 100.00, \"denominacionBillete\": 100.00 }\n}"},
+        "url": { "raw": "{{baseUrl}}/api/ventas", "host": ["{{baseUrl}}"], "path": ["api","ventas"] },
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }
+      }
+    },
+    {
+      "name": "Venta - Mayoreo",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\n  \"tipo\": \"MAYOREO\",\n  \"idCliente\": 1,\n  \"items\": [ { \"codigoBarras\": \"7501234567890\", \"cantidad\": 20, \"precioUnitario\": 18.00 } ],\n  \"pago\": { \"montoEntregado\": 400.00 }\n}"},
+        "url": { "raw": "{{baseUrl}}/api/ventas", "host": ["{{baseUrl}}"], "path": ["api","ventas"] },
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }
+      }
+    },
+    {
+      "name": "Venta - Fiado",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\n  \"tipo\": \"FIADO\",\n  \"idCliente\": 1,\n  \"items\": [ { \"codigoBarras\": \"7501234567890\", \"cantidad\": 5 } ]\n}"},
+        "url": { "raw": "{{baseUrl}}/api/ventas", "host": ["{{baseUrl}}"], "path": ["api","ventas"] },
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }
+      }
+    },
+    {
+      "name": "Fiados - Saldo",
+      "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/fiados/saldo/1","host":["{{baseUrl}}"],"path":["api","fiados","saldo","1"]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Fiados - Abono",
+      "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],
+        "body":{"mode":"raw","raw":"{\n \"idCliente\": 1,\n \"monto\": 50.00\n}"},
+        "url":{"raw":"{{baseUrl}}/api/fiados/abonos","host":["{{baseUrl}}"],"path":["api","fiados","abonos"]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Reportes - Ventas (diario)",
+      "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/reportes/ventas?periodo=diario","host":["{{baseUrl}}"],"path":["api","reportes","ventas"],"query":[{"key":"periodo","value":"diario"}]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Reportes - Utilidades",
+      "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/reportes/utilidades?inicio=2025-10-26T00:00:00Z&fin=2025-10-27T00:00:00Z","host":["{{baseUrl}}"],"path":["api","reportes","utilidades"],"query":[{"key":"inicio","value":"2025-10-26T00:00:00Z"},{"key":"fin","value":"2025-10-27T00:00:00Z"}]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Reportes - Más Vendidos",
+      "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/reportes/mas-vendidos?inicio=2025-10-26T00:00:00Z&fin=2025-10-27T00:00:00Z&top=5","host":["{{baseUrl}}"],"path":["api","reportes","mas-vendidos"],"query":[{"key":"inicio","value":"2025-10-26T00:00:00Z"},{"key":"fin","value":"2025-10-27T00:00:00Z"},{"key":"top","value":"5"}]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Lotes por vencer (30 días)",
+      "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/lotes/por-vencer?dias=30","host":["{{baseUrl}}"],"path":["api","lotes","por-vencer"],"query":[{"key":"dias","value":"30"}]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Merma - Registrar",
+      "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],
+        "body":{"mode":"raw","raw":"{\n \"idProducto\": 1,\n \"idLote\": 1,\n \"cantidad\": 2,\n \"motivo\": \"DAÑO\",\n \"observacion\": \"Producto roto\"\n}"},
+        "url":{"raw":"{{baseUrl}}/api/mermas","host":["{{baseUrl}}"],"path":["api","mermas"]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Devolución a proveedor",
+      "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],
+        "body":{"mode":"raw","raw":"{\n \"idProveedor\": 1,\n \"motivo\": \"Vencimiento\",\n \"items\": [ { \"idProducto\": 1, \"idLote\": 1, \"cantidad\": 5, \"costoEstimado\": 10.5 } ]\n}"},
+        "url":{"raw":"{{baseUrl}}/api/devoluciones-proveedor","host":["{{baseUrl}}"],"path":["api","devoluciones-proveedor"]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Venta - Pago (parcial/completo)",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\n  \"monto\": 50.00\n}"},
+        "url": { "raw": "{{baseUrl}}/api/ventas/1/pago", "host": ["{{baseUrl}}"], "path": ["api","ventas","1","pago"] },
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }
+      }
+    },
+    {
+      "name": "Venta - Comprobante",
+      "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/ventas/1/comprobante","host":["{{baseUrl}}"],"path":["api","ventas","1","comprobante"]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Compra - Registrar Pago",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\n  \"idCompra\": 1,\n  \"metodo\": \"EFECTIVO\",\n  \"monto\": 100.00\n}"},
+        "url": { "raw": "{{baseUrl}}/api/compras/pago", "host": ["{{baseUrl}}"], "path": ["api","compras","pago"] },
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }
+      }
+    },
+    {
+      "name": "Compras - Reporte (diario)",
+      "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/compras/reporte?periodo=diario","host":["{{baseUrl}}"],"path":["api","compras","reporte"],"query":[{"key":"periodo","value":"diario"}]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Reportes - Ventas CSV (diario)",
+      "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/reportes/ventas.csv?periodo=diario","host":["{{baseUrl}}"],"path":["api","reportes","ventas.csv"],"query":[{"key":"periodo","value":"diario"}]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Reportes - Serie ventas (day)",
+      "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/reportes/ventas/serie?inicio=2025-10-26T00:00:00Z&fin=2025-10-27T00:00:00Z&granularidad=day","host":["{{baseUrl}}"],"path":["api","reportes","ventas","serie"],"query":[{"key":"inicio","value":"2025-10-26T00:00:00Z"},{"key":"fin","value":"2025-10-27T00:00:00Z"},{"key":"granularidad","value":"day"}]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Producto - Alertas stock bajo",
+      "request": {"method":"GET","url":{"raw":"{{baseUrl}}/api/productos/alertas/stock-bajo","host":["{{baseUrl}}"],"path":["api","productos","alertas","stock-bajo"]},
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }}
+    },
+    {
+      "name": "Producto - Notificar stock bajo",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "url": { "raw": "{{baseUrl}}/api/productos/alertas/stock-bajo/notificar", "host": ["{{baseUrl}}"], "path": ["api","productos","alertas","stock-bajo","notificar"] },
+        "auth": { "type": "basic", "basic": [{"key":"username","value":"admin"},{"key":"password","value":"admin123"}] }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8081" }
+  ]
+}

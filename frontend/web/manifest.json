@@ -1,0 +1,13 @@
+{
+  "name": "App Roles",
+  "short_name": "Roles",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "description": "Flutter Web con manejo de roles",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "icons": []
+}
+

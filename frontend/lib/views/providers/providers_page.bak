@@ -1,0 +1,197 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../models/proveedor.dart';
+import '../../services/proveedor_service.dart';
+import '../../state/auth_notifier.dart';
+import '../../widgets/responsive_scaffold.dart';
+import '../../widgets/async_loader.dart';
+
+class ProvidersPage extends ConsumerStatefulWidget {
+  const ProvidersPage({super.key});
+  @override
+  ConsumerState<ProvidersPage> createState() => _ProvidersPageState();
+}
+
+class _ProvidersPageState extends ConsumerState<ProvidersPage> {
+  bool _loading = false;
+  String? _error;
+  List<Proveedor> _items = [];
+  String _query = '';
+  int _page = 0;
+  int _rowsPerPage = 10;
+  final List<int> _rowsPerPageOptions = const [5, 10, 20, 50];
+
+  ProveedorService _service() => ProveedorService(token: ref.read(authProvider).token!);
+
+  Future<void> _load() async {
+    setState(() { _loading = true; _error = null; });
+    try { _items = await _service().list(); } catch (e) { _error = e.toString(); } finally { if (mounted) setState(() => _loading = false); }
+  }
+
+  @override
+  void initState() { super.initState(); _load(); }
+
+  @override
+  Widget build(BuildContext context) {
+    final role = ref.watch(authProvider).role;
+    final canEdit = role == 'admin';
+    final filtered = _items.where((p) => p.nombre.toLowerCase().contains(_query.toLowerCase())).toList();
+    final total = filtered.length;
+    final maxPage = (total == 0) ? 0 : ((total - 1) / _rowsPerPage).floor();
+    if (_page > maxPage) _page = 0;
+    final start = (_page * _rowsPerPage).clamp(0, total);
+    final end = (start + _rowsPerPage).clamp(0, total);
+    final paged = filtered.sublist(start, end);
+    return ResponsiveScaffold(
+      title: 'Proveedores',
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: AsyncLoader(
+          loading: _loading, error: _error,
+          child: Column(children: [
+            Row(children: [
+              Expanded(
+                child: TextField(
+                  decoration: const InputDecoration(prefixIcon: Icon(Icons.search), hintText: 'Buscar por nombre'),
+                  onChanged: (q) => setState(() { _query = q; _page = 0; }),
+                ),
+              ),
+              const SizedBox(width: 8),
+              if (canEdit)
+                FilledButton.icon(
+                  onPressed: () async {
+                    final created = await showDialog<Proveedor>(context: context, builder: (c) => const _ProviderForm());
+                    if (created != null) { await _service().create(created); _load(); }
+                  },
+                  icon: const Icon(Icons.add), label: const Text('Nuevo'),
+                ),
+            ]),
+            const SizedBox(height: 12),
+            Expanded(
+              child: Card(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columns: const [
+                      DataColumn(label: Text('Nombre')),
+                      DataColumn(label: Text('Contacto')),
+                      DataColumn(label: Text('Teléfono')),
+                      DataColumn(label: Text('Activo')),
+                      DataColumn(label: Text('Acciones')),
+                    ],
+                    rows: paged.map((p) => DataRow(cells: [
+                      DataCell(Text(p.nombre)),
+                      DataCell(Text(p.contacto ?? '-')),
+                      DataCell(Text(p.telefono ?? '-')),
+                      DataCell(Icon(p.activo ? Icons.check_circle : Icons.cancel, color: p.activo ? Colors.green : Colors.red)),
+                      DataCell(Row(children: [
+                        IconButton(icon: const Icon(Icons.visibility)),
+                        if (canEdit)
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () async {
+                              final updated = await showDialog<Proveedor>(context: context, builder: (c) => _ProviderForm(proveedor: p));
+                              if (updated != null) { await _service().update(updated); _load(); }
+                            },
+                          ),
+                      ])),
+                    ])).toList(),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(children: [
+              Text(total == 0 ? '0 resultados' : '${start + 1}–${end} de ${total}'),
+              const Spacer(),
+              const Text('Filas por página: '),
+              DropdownButton<int>(
+                value: _rowsPerPage,
+                items: _rowsPerPageOptions.map((v) => DropdownMenuItem(value: v, child: Text('$v'))).toList(),
+                onChanged: (v) => setState(() { _rowsPerPage = v ?? 10; _page = 0; }),
+              ),
+              IconButton(
+                tooltip: 'Anterior',
+                onPressed: _page > 0 ? () => setState(() => _page -= 1) : null,
+                icon: const Icon(Icons.chevron_left),
+              ),
+              Text('${total == 0 ? 0 : (_page + 1)} / ${(maxPage + 1)}'),
+              IconButton(
+                tooltip: 'Siguiente',
+                onPressed: (_page < maxPage) ? () => setState(() => _page += 1) : null,
+                icon: const Icon(Icons.chevron_right),
+              ),
+            ])
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProviderForm extends StatefulWidget {
+  final Proveedor? proveedor;
+  const _ProviderForm({this.proveedor});
+  @override
+  State<_ProviderForm> createState() => _ProviderFormState();
+}
+
+class _ProviderFormState extends State<_ProviderForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _nombre = TextEditingController();
+  final _contacto = TextEditingController();
+  final _telefono = TextEditingController();
+  final _direccion = TextEditingController();
+  bool _activo = true;
+
+  @override
+  void initState() {
+    super.initState();
+    final p = widget.proveedor;
+    if (p != null) {
+      _nombre.text = p.nombre;
+      _contacto.text = p.contacto ?? '';
+      _telefono.text = p.telefono ?? '';
+      _direccion.text = p.direccion ?? '';
+      _activo = p.activo;
+    }
+  }
+
+  @override
+  void dispose() { _nombre.dispose(); _contacto.dispose(); _telefono.dispose(); _direccion.dispose(); super.dispose(); }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.proveedor == null ? 'Nuevo proveedor' : 'Editar proveedor'),
+      content: SizedBox(
+        width: 420,
+        child: Form(
+          key: _formKey,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            TextFormField(controller: _nombre, decoration: const InputDecoration(labelText: 'Nombre'), validator: (v) => (v==null||v.isEmpty)?'Requerido':null),
+            TextFormField(controller: _contacto, decoration: const InputDecoration(labelText: 'Contacto')),
+            TextFormField(controller: _telefono, decoration: const InputDecoration(labelText: 'Teléfono')),
+            TextFormField(controller: _direccion, decoration: const InputDecoration(labelText: 'Dirección')),
+            SwitchListTile(value: _activo, onChanged: (v)=>setState(()=>_activo=v), title: const Text('Activo')),
+          ]),
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: ()=>Navigator.pop(context), child: const Text('Cancelar')),
+        FilledButton(onPressed: (){
+          if(!_formKey.currentState!.validate()) return;
+          final p = Proveedor(
+            id: widget.proveedor?.id ?? 0,
+            nombre: _nombre.text.trim(),
+            contacto: _contacto.text.trim().isEmpty? null : _contacto.text.trim(),
+            telefono: _telefono.text.trim().isEmpty? null : _telefono.text.trim(),
+            direccion: _direccion.text.trim().isEmpty? null : _direccion.text.trim(),
+            activo: _activo,
+          );
+          Navigator.pop(context, p);
+        }, child: const Text('Guardar')),
+      ],
+    );
+  }
+}
